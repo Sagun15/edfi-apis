@@ -15,6 +15,7 @@ import {
 import { QueryRunner, Repository } from 'typeorm';
 import { Credential } from 'src/common/entities/credential.entity';
 import { CREDENTIAL_CONSTANTS } from '../constants/credential.constants';
+import { CREDENTIAL_TEST_CONSTANTS } from '../constants/credential.test.constants';
 import { faker } from '@faker-js/faker';
 import { UUID } from 'crypto';
 import { StateAbbreviationDescriptor } from 'src/common/entities/descriptors/state-abbreviation.descriptor';
@@ -25,14 +26,14 @@ import { TeachingCredentialBasisDescriptor } from 'src/common/entities/descripto
 
 describe('CredentialService', () => {
   // Reusable test data
-  const mockQueryOptions = { limit: 10, offset: 0 };
+  const mockQueryOptions = CREDENTIAL_TEST_CONSTANTS.MOCK_QUERY_OPTIONS;
   const mockHttpResponse = { setHeader: jest.fn() };
-  const mockQueryRunner = {
+  const mockQueryRunner: QueryRunner = {
     connection: {},
     manager: {},
     isReleased: false,
-  } as unknown as QueryRunner;
-  const mockIfMatchHeader = '"2024-01-01T00:00:00.000Z"';
+  } as QueryRunner;
+  const mockIfMatchHeader = CREDENTIAL_TEST_CONSTANTS.MOCK_IF_MATCH_HEADER;
 
   // Service dependencies
   let service: CredentialService;
@@ -41,46 +42,67 @@ describe('CredentialService', () => {
   let transactionService: jest.Mocked<TransactionService>;
   let logger: jest.Mocked<CustomLogger>;
 
-  // Mock descriptor repositories
+  // Mock descriptor repositories with precise typing
   const mockStateAbbrevRepo = {
-    findOne: jest.fn(),
-    target: StateAbbreviationDescriptor,
-    manager: {},
-    metadata: {},
-    createQueryBuilder: jest.fn(),
-  } as unknown as jest.Mocked<Repository<StateAbbreviationDescriptor>>;
+    findOne: jest.fn() as jest.MockedFunction<
+      Repository<StateAbbreviationDescriptor>['findOne']
+    >,
+    target: StateAbbreviationDescriptor as typeof StateAbbreviationDescriptor,
+    manager: {} as Repository<StateAbbreviationDescriptor>['manager'],
+    metadata: {} as Repository<StateAbbreviationDescriptor>['metadata'],
+    createQueryBuilder: jest.fn() as jest.MockedFunction<
+      Repository<StateAbbreviationDescriptor>['createQueryBuilder']
+    >,
+  };
 
   const mockCredentialTypeRepo = {
-    findOne: jest.fn(),
-    target: CredentialTypeDescriptor,
-    manager: {},
-    metadata: {},
-    createQueryBuilder: jest.fn(),
-  } as unknown as jest.Mocked<Repository<CredentialTypeDescriptor>>;
+    findOne: jest.fn() as jest.MockedFunction<
+      Repository<CredentialTypeDescriptor>['findOne']
+    >,
+    target: CredentialTypeDescriptor as typeof CredentialTypeDescriptor,
+    manager: {} as Repository<CredentialTypeDescriptor>['manager'],
+    metadata: {} as Repository<CredentialTypeDescriptor>['metadata'],
+    createQueryBuilder: jest.fn() as jest.MockedFunction<
+      Repository<CredentialTypeDescriptor>['createQueryBuilder']
+    >,
+  };
 
   const mockCredentialFieldRepo = {
-    findOne: jest.fn(),
-    target: CredentialFieldDescriptor,
-    manager: {},
-    metadata: {},
-    createQueryBuilder: jest.fn(),
-  } as unknown as jest.Mocked<Repository<CredentialFieldDescriptor>>;
+    findOne: jest.fn() as jest.MockedFunction<
+      Repository<CredentialFieldDescriptor>['findOne']
+    >,
+    target: CredentialFieldDescriptor as typeof CredentialFieldDescriptor,
+    manager: {} as Repository<CredentialFieldDescriptor>['manager'],
+    metadata: {} as Repository<CredentialFieldDescriptor>['metadata'],
+    createQueryBuilder: jest.fn() as jest.MockedFunction<
+      Repository<CredentialFieldDescriptor>['createQueryBuilder']
+    >,
+  };
 
   const mockTeachingCredentialRepo = {
-    findOne: jest.fn(),
-    target: TeachingCredentialDescriptor,
-    manager: {},
-    metadata: {},
-    createQueryBuilder: jest.fn(),
-  } as unknown as jest.Mocked<Repository<TeachingCredentialDescriptor>>;
+    findOne: jest.fn() as jest.MockedFunction<
+      Repository<TeachingCredentialDescriptor>['findOne']
+    >,
+    target: TeachingCredentialDescriptor as typeof TeachingCredentialDescriptor,
+    manager: {} as Repository<TeachingCredentialDescriptor>['manager'],
+    metadata: {} as Repository<TeachingCredentialDescriptor>['metadata'],
+    createQueryBuilder: jest.fn() as jest.MockedFunction<
+      Repository<TeachingCredentialDescriptor>['createQueryBuilder']
+    >,
+  };
 
   const mockTeachingCredentialBasisRepo = {
-    findOne: jest.fn(),
-    target: TeachingCredentialBasisDescriptor,
-    manager: {},
-    metadata: {},
-    createQueryBuilder: jest.fn(),
-  } as unknown as jest.Mocked<Repository<TeachingCredentialBasisDescriptor>>;
+    findOne: jest.fn() as jest.MockedFunction<
+      Repository<TeachingCredentialBasisDescriptor>['findOne']
+    >,
+    target:
+      TeachingCredentialBasisDescriptor as typeof TeachingCredentialBasisDescriptor,
+    manager: {} as Repository<TeachingCredentialBasisDescriptor>['manager'],
+    metadata: {} as Repository<TeachingCredentialBasisDescriptor>['metadata'],
+    createQueryBuilder: jest.fn() as jest.MockedFunction<
+      Repository<TeachingCredentialBasisDescriptor>['createQueryBuilder']
+    >,
+  };
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -145,9 +167,9 @@ describe('CredentialService', () => {
       },
     );
 
-    // Setup descriptor repository mocks
+    // Setup descriptor repository mocks - return mock objects that satisfy the Repository interface where needed
     transactionService.getRepository.mockImplementation(
-      (entity, queryRunner) => {
+      (entity: any, queryRunner: any): any => {
         switch (entity) {
           case StateAbbreviationDescriptor:
             return mockStateAbbrevRepo;
@@ -167,19 +189,24 @@ describe('CredentialService', () => {
 
     // Setup default descriptor responses
     mockStateAbbrevRepo.findOne.mockResolvedValue({
-      stateAbbreviationDescriptorId: 1,
+      stateAbbreviationDescriptorId:
+        CREDENTIAL_TEST_CONSTANTS.MOCK_DESCRIPTOR_IDS.STATE_ABBREVIATION,
     } as StateAbbreviationDescriptor);
     mockCredentialTypeRepo.findOne.mockResolvedValue({
-      credentialTypeDescriptorId: 1,
+      credentialTypeDescriptorId:
+        CREDENTIAL_TEST_CONSTANTS.MOCK_DESCRIPTOR_IDS.CREDENTIAL_TYPE,
     } as CredentialTypeDescriptor);
     mockCredentialFieldRepo.findOne.mockResolvedValue({
-      credentialFieldDescriptorId: 1,
+      credentialFieldDescriptorId:
+        CREDENTIAL_TEST_CONSTANTS.MOCK_DESCRIPTOR_IDS.CREDENTIAL_FIELD,
     } as CredentialFieldDescriptor);
     mockTeachingCredentialRepo.findOne.mockResolvedValue({
-      teachingCredentialDescriptorId: 1,
+      teachingCredentialDescriptorId:
+        CREDENTIAL_TEST_CONSTANTS.MOCK_DESCRIPTOR_IDS.TEACHING_CREDENTIAL,
     } as TeachingCredentialDescriptor);
     mockTeachingCredentialBasisRepo.findOne.mockResolvedValue({
-      teachingCredentialBasisDescriptorId: 1,
+      teachingCredentialBasisDescriptorId:
+        CREDENTIAL_TEST_CONSTANTS.MOCK_DESCRIPTOR_IDS.TEACHING_CREDENTIAL_BASIS,
     } as TeachingCredentialBasisDescriptor);
   });
 
@@ -279,15 +306,27 @@ describe('CredentialService', () => {
 
       const mockSavedCredential = generateMockCredential();
       const mockRepository = {
-        save: jest.fn().mockResolvedValue(mockSavedCredential),
-        findOne: jest.fn().mockResolvedValue(mockSavedCredential),
-        target: Credential,
-        manager: {},
-        metadata: {},
-        createQueryBuilder: jest.fn(),
-      } as unknown as Repository<Credential>;
+        save: jest
+          .fn()
+          .mockResolvedValue(mockSavedCredential) as jest.MockedFunction<
+          Repository<Credential>['save']
+        >,
+        findOne: jest
+          .fn()
+          .mockResolvedValue(mockSavedCredential) as jest.MockedFunction<
+          Repository<Credential>['findOne']
+        >,
+        target: Credential as typeof Credential,
+        manager: {} as Repository<Credential>['manager'],
+        metadata: {} as Repository<Credential>['metadata'],
+        createQueryBuilder: jest.fn() as jest.MockedFunction<
+          Repository<Credential>['createQueryBuilder']
+        >,
+      };
 
-      transactionService.getRepository.mockReturnValue(mockRepository);
+      (
+        transactionService.getRepository as jest.MockedFunction<any>
+      ).mockReturnValue(mockRepository);
       credentialRepository.resolveCredentialDescriptors.mockResolvedValue(
         mockSavedCredential,
       );
