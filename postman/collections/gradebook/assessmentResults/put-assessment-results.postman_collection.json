@@ -1,0 +1,623 @@
+{
+	"info": {
+		"_postman_id": "0ad7a8a8-a76e-4c30-ae36-cff89c88ab0d",
+		"name": "put-assessment-results",
+		"description": "Test suite for Creating Assessment Result API focusing on happy paths and validation scenarios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36990357"
+	},
+	"item": [
+		{
+			"name": "Happy Path Tests",
+			"item": [
+				{
+					"name": "Create Assessment Result - Full Payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script",
+									"const newSourcedId = pm.variables.replaceIn('{{$guid}}');",
+									"pm.variables.set('currentSourcedId', newSourcedId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assessmentResult\": {\n        \"sourcedId\": \"{{currentSourcedId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"{{timestamp}}\",\n        \"metadata\": {\n            \"extensions\": {\n                \"fields\": {\n                    \"result\": {\n                        \"maxScore\": 100,\n                        \"resultType\": \"PLACEMENT_TEST\"\n                    },\n                    \"attempt\": {\n                        \"sourcedId\": \"{{$guid}}\",\n                        \"startedAtTime\": \"{{timestamp}}\",\n                        \"endedAtTime\": \"{{timestamp}}\",\n                        \"duration\": 120\n                    }\n                }\n            }\n        },\n        \"assessmentLineItem\": {\n            \"sourcedId\": \"{{validAssessmentLineItemId}}\",\n            \"type\": \"assessment\",\n            \"href\": \"{{baseUrl}}/assessmentLineItems/{{validAssessmentLineItemId}}\"\n        },\n        \"student\": {\n            \"sourcedId\": \"{{validStudentId}}\",\n            \"type\": \"student\",\n            \"href\": \"{{baseUrl}}/users/{{validStudentId}}\"\n        },\n        \"score\": 85,\n        \"textScore\": \"Excellent\",\n        \"scoreDate\": \"2025-02-05\",\n        \"scoreScale\": {\n            \"sourcedId\": \"{{validScoreScaleId}}\",\n            \"type\": \"scale\",\n            \"href\": \"{{baseUrl}}/scoreScales/{{validScoreScaleId}}\"\n        },\n        \"scorePercentile\": 95,\n        \"scoreStatus\": \"FULLY_GRADED\",\n        \"comment\": \"Outstanding performance\",\n        \"inProgress\": false,\n        \"incomplete\": false,\n        \"late\": false,\n        \"missing\": false\n    }\n}"
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentResults/{{currentSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Assessment Result - Minimal Payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script",
+									"const newSourcedId = pm.variables.replaceIn('{{$guid}}');",
+									"pm.variables.set('currentSourcedId', newSourcedId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assessmentResult\": {\n        \"sourcedId\": \"{{currentSourcedId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"{{timestamp}}\",\n        \"assessmentLineItem\": {\n            \"sourcedId\": \"{{validAssessmentLineItemId}}\",\n            \"type\": \"assessment\",\n            \"href\": \"{{baseUrl}}/assessmentLineItems/{{validAssessmentLineItemId}}\"\n        },\n        \"student\": {\n            \"sourcedId\": \"{{validStudentId}}\",\n            \"type\": \"student\",\n            \"href\": \"{{baseUrl}}/users/{{validStudentId}}\"\n        },\n        \"scoreDate\": \"2025-02-05\",\n        \"scoreStatus\": \"PARTIALLY_GRADED\"\n    }\n}"
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentResults/{{currentSourcedId}}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Validation Tests",
+			"item": [
+				{
+					"name": "Invalid Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Error response structure is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assessmentResult\": {\n        \"sourcedId\": \"{{$guid}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"{{timestamp}}\",\n        \"assessmentLineItem\": {\n            \"sourcedId\": \"{{validLineItemId}}\",\n            \"type\": \"assessment\",\n            \"href\": \"{{baseUrl}}/assessmentLineItems/{{validLineItemId}}\"\n        },\n        \"student\": {\n            \"sourcedId\": \"{{validStudentId}}\",\n            \"type\": \"student\",\n            \"href\": \"{{baseUrl}}/users/{{validStudentId}}\"\n        },\n        \"scoreDate\": \"2025-02-05\",\n        \"scoreStatus\": \"NOT_GRADED\"\n    }\n}"
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentResults/{{$guid}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Resource Already Exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 409\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});",
+									"",
+									"pm.test(\"Error response indicates conflict\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData.imsx_description).to.include('already exists');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script",
+									"const newSourcedId = pm.variables.replaceIn('{{$guid}}');",
+									"pm.variables.set('currentSourcedId', newSourcedId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assessmentResult\": {\n        \"sourcedId\": \"{{existingAssessmentResultId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"{{timestamp}}\",\n        \"assessmentLineItem\": {\n            \"sourcedId\": \"{{validAssessmentLineItemId}}\",\n            \"type\": \"assessment\",\n            \"href\": \"{{baseUrl}}/assessmentLineItems/{{validAssessmentLineItemId}}\"\n        },\n        \"student\": {\n            \"sourcedId\": \"{{validStudentId}}\",\n            \"type\": \"student\",\n            \"href\": \"{{baseUrl}}/users/{{{validStudentId}}\"\n        },\n        \"scoreDate\": \"2025-02-05\",\n        \"scoreStatus\": \"PARTIALLY_GRADED\"\n    }\n}"
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentResults/{{existingAssessmentResultId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-existent References",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error response indicates not found\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script",
+									"const newSourcedId = pm.variables.replaceIn('{{$guid}}');",
+									"pm.variables.set('currentSourcedId', newSourcedId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assessmentResult\": {\n        \"sourcedId\": \"{{currentSourcedId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"{{timestamp}}\",\n        \"assessmentLineItem\": {\n            \"sourcedId\": \"{{$guid}}\",\n            \"type\": \"assessment\",\n            \"href\": \"{{baseUrl}}/assessmentLineItems/{{$guid}}\"\n        },\n        \"student\": {\n            \"sourcedId\": \"{{$guid}}\",\n            \"type\": \"student\",\n            \"href\": \"{{baseUrl}}/users/{{$guid}}\"\n        },\n        \"scoreDate\": \"2025-02-05\",\n        \"scoreStatus\": \"PARTIALLY_GRADED\"\n    }\n}"
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentResults/{{currentSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Required Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response indicates missing required fields\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const newSourcedId = pm.variables.replaceIn('{{$guid}}');",
+									"pm.variables.set('currentSourcedId', newSourcedId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assessmentResult\": {\n        \"sourcedId\": \"{{currentSourcedId}}\",\n        \"metadata\": {\n            \"result\": {\n                \"maxScore\": 100\n            }\n        },\n        \"score\": 85,\n        \"textScore\": \"Excellent\",\n        \"scorePercentile\": 95,\n        \"comment\": \"Outstanding performance\",\n        \"inProgress\": false,\n        \"incomplete\": false,\n        \"late\": false,\n        \"missing\": false\n    }\n}"
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentResults/{{currentSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Reference Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response indicates invalid reference type\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const newSourcedId = pm.variables.replaceIn('{{$guid}}');",
+									"pm.variables.set('currentSourcedId', newSourcedId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assessmentResult\": {\n        \"sourcedId\": \"{{currentSourcedId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"{{timestamp}}\",\n        \"assessmentLineItem\": {\n            \"sourcedId\": \"{{validLineItemId}}\",\n            \"type\": \"invalid_type\",\n            \"href\": \"{{baseUrl}}/assessmentLineItems/{{validLineItemId}}\"\n        },\n        \"student\": {\n            \"sourcedId\": \"{{validStudentId}}\",\n            \"type\": \"student\",\n            \"href\": \"{{baseUrl}}/users/{{validStudentId}}\"\n        },\n        \"scoreDate\": \"2025-02-05\",\n        \"scoreStatus\": \"PARTIALLY_GRADED\"\n    }\n}"
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentResults/{{currentSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Date Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response indicates invalid date format\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const newSourcedId = pm.variables.replaceIn('{{$guid}}');",
+									"pm.variables.set('currentSourcedId', newSourcedId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assessmentResult\": {\n        \"sourcedId\": \"{{currentSourcedId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"2024-01-27\",\n        \"assessmentLineItem\": {\n            \"sourcedId\": \"{{validAssessmentLineItemId}}\",\n            \"type\": \"assessment\",\n            \"href\": \"{{baseUrl}}/assessmentLineItems/{{validAssessmentLineItemId}}\"\n        },\n        \"student\": {\n            \"sourcedId\": \"{{validStudentId}}\",\n            \"type\": \"student\",\n            \"href\": \"{{baseUrl}}/users/{{validStudentId}}\"\n        },\n        \"scoreDate\": \"27-01-2024\",\n        \"scoreStatus\": \"PARTIALLY_GRADED\"\n    }\n}"
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentResults/{{currentSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Metadata Structure",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response indicates invalid metadata\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const newSourcedId = pm.variables.replaceIn('{{$guid}}');",
+									"pm.variables.set('currentSourcedId', newSourcedId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assessmentResult\": {\n        \"sourcedId\": \"{{currentSourcedId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"{{timestamp}}\",\n        \"metadata\": \"not-an-object\",\n        \"assessmentLineItem\": {\n            \"sourcedId\": \"{{validAssessmentLineItemId}}\",\n            \"type\": \"assessment\",\n            \"href\": \"{{baseUrl}}/assessmentLineItems/{{validAssessmentLineItemId}}\"\n        },\n        \"student\": {\n            \"sourcedId\": \"{{validStudentId}}\",\n            \"type\": \"student\",\n            \"href\": \"{{baseUrl}}/users/{{validStudentId}}\"\n        },\n        \"scoreDate\": \"2025-02-05\",\n        \"scoreStatus\": \"PARTIALLY_GRADED\"\n    }\n}"
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentResults/{{currentSourcedId}}"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "validAssessmentLineItemId",
+			"value": "1697a739-f146-46d1-8324-16d10bc6b81d",
+			"type": "string"
+		},
+		{
+			"key": "validStudentId",
+			"value": "<valid-student-id>",
+			"type": "string"
+		},
+		{
+			"key": "validScoreScaleId",
+			"value": "<valid-score-scale-id>",
+			"type": "string"
+		},
+		{
+			"key": "existingAssessmentResultId",
+			"value": "<existing-assessment-result-id>",
+			"type": "string"
+		},
+		{
+			"key": "x-client-id",
+			"value": "{{x-client-id}}",
+			"type": "string"
+		},
+		{
+			"key": "gradebookServiceApiPrefix",
+			"value": "/ims/oneroster/gradebook/v1p2",
+			"type": "string"
+		},
+		{
+			"key": "x-app-key",
+			"value": "{{x-app-key}}",
+			"type": "string"
+		},
+		{
+			"key": "bearerToken",
+			"value": "{{bearer-token}}",
+			"type": "string"
+		},
+		{
+			"key": "currentSourcedId",
+			"value": "<current-sourced-id>",
+			"type": "string"
+		},
+		{
+			"key": "timestamp",
+			"value": "<timestamp>",
+			"type": "string"
+		}
+	]
+}

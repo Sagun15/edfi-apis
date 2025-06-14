@@ -1,0 +1,392 @@
+{
+	"info": {
+		"_postman_id": "20fb9587-e42c-4b8a-a157-e594213e4fa0",
+		"name": "get-resource-by-sourcedId",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32523654"
+	},
+	"item": [
+		{
+			"name": "Happy Path Tests",
+			"item": [
+				{
+					"name": "Retrieve with Valid ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/CFItemTypes/e06cf98d-9683-4acb-9465-110460889236",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"CFItemTypes",
+								"e06cf98d-9683-4acb-9465-110460889236"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Response Using Valid Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Field test\", function () {",
+									"    const responseKeys = Object.keys(pm.response.json().CFItemTypes[0]);",
+									"    const fields = pm.request.url.query.get('fields').split(\",\").map(field => field.trim());",
+									"    pm.expect(responseKeys.sort()).to.eql(fields.sort());",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/CFItemTypes/e06cf98d-9683-4acb-9465-110460889236?fields=identifier,uri,title,hierarchyCode,typeCode,lastChangeDateTime",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"CFItemTypes",
+								"e06cf98d-9683-4acb-9465-110460889236"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "identifier,uri,title,hierarchyCode,typeCode,lastChangeDateTime"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Fields Parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Field test\", function () {",
+									"    const responseKeys = Object.keys(pm.response.json().CFItemTypes[0]);",
+									"    const fields = pm.request.url.query.get('fields').split(\",\").map(field => field.trim());",
+									"    pm.expect(responseKeys.sort()).not.to.eql(fields.sort());",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/CFItemTypes/e06cf98d-9683-4acb-9465-110460889236?fields=invalidField1,invalidField2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"CFItemTypes",
+								"e06cf98d-9683-4acb-9465-110460889236"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "invalidField1,invalidField2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Tests",
+			"item": [
+				{
+					"name": "Invalid UUID Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(400);",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.imsx_description).to.eql(`sourcedId must be of type UUID`);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/CFItemTypes/invalid-uuid-format",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"CFItemTypes",
+								"invalid-uuid-format"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Non-Existent ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/CFItemTypes/c56a4180-65aa-42ec-a945-5fd21dec0000",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"CFItemTypes",
+								"c56a4180-65aa-42ec-a945-5fd21dec0000"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Required Header - x-client-id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/CFItemTypes/c56a4180-65aa-42ec-a945-5fd21dec0538",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"CFItemTypes",
+								"c56a4180-65aa-42ec-a945-5fd21dec0538"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Malformed Fields Parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(400);",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.imsx_description).to.eql(`Malformed fields parameter`);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/CFItemTypes/c56a4180-65aa-42ec-a945-5fd21dec0538?fields=identifier,,title,,,uri",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"CFItemTypes",
+								"c56a4180-65aa-42ec-a945-5fd21dec0538"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "identifier,,title,,,uri"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,276 @@
+{
+  "info": {
+    "_postman_id": "{{$guid}}",
+    "name": "delete-results",
+    "description": "Test suite for Result DELETE API focusing on happy paths with selective negative cases",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "25454109"
+  },
+  "item": [
+    {
+      "name": "Happy Path Tests",
+      "item": [
+        {
+          "name": "Delete Single Result",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  "",
+                  "// Verify no response body for 204",
+                  "pm.test(\"No response body\", function() {",
+                  "    pm.response.to.not.have.body();",
+                  "});",
+                  "",
+                  "// Performance test",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/results/{{validSourcedId}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["results", "{{validSourcedId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative Tests",
+      "item": [
+        {
+          "name": "Invalid Authentication",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response structure is correct\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+                  "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description').equal('Missing required headers');",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "    ",
+                  "    const errorField = responseData.imsx_CodeMinor.imsx_codeMinorField[0];",
+                  "    pm.expect(errorField).to.have.property('imsx_codeMinorFieldName').equal('TargetEndSystem');",
+                  "    pm.expect(errorField).to.have.property('imsx_codeMinorFieldValue').equal('unauthorisedrequest');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/results/{{validSourcedId}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["results", "{{validSourcedId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid SourcedId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response structure is correct\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+                  "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/results/invalid-uuid",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["results", "invalid-uuid"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Not Found SourcedId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response structure is correct\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+                  "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description').to.include('not found');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/results/{{$guid}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["results", "{{$guid}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assessment Result Type",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response structure is correct\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+                  "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "    ",
+                  "    const errorField = responseData.imsx_CodeMinor.imsx_codeMinorField[0];",
+                  "    pm.expect(errorField).to.have.property('imsx_codeMinorFieldName').equal('TargetEndSystem');",
+                  "    pm.expect(errorField).to.have.property('imsx_codeMinorFieldValue').equal('unknownobject');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/results/{{assessmentResultSourcedId}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["results", "{{assessmentResultSourcedId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "{{baseUrl}}{{gradebookServiceApiPrefix}}",
+      "type": "string"
+    },
+    {
+      "key": "validSourcedId",
+      "value": "b6bca604-32ef-4597-a98c-2276fa8b7b00",
+      "type": "string"
+    },
+    {
+      "key": "assessmentResultSourcedId",
+      "value": "2c6e7189-6077-4228-9ef8-4cf9a36c7fcb",
+      "type": "string"
+    }
+  ]
+}

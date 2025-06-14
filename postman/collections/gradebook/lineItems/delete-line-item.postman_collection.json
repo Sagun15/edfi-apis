@@ -1,0 +1,103 @@
+{
+  "info": {
+    "_postman_id": "0de3a390-7bc4-432b-9037-3e359a191ba7",
+    "name": "deleteLineItem",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31022060"
+  },
+  "item": [
+    {
+      "name": "deleteLineItem with invalid param",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{bearer-token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/lineItems/a7d078e8-6102-4672-90f9-e2371ae2d788?sort=sourcedId",
+          "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+          "path": ["lineItems", "a7d078e8-6102-4672-90f9-e2371ae2d788"],
+          "query": [
+            {
+              "key": "sort",
+              "value": "sourcedId"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "trytodeleteAssessmentLineItem",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{bearer-token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/lineItems/1697a739-f146-46d1-8324-16d10bc6b81d",
+          "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+          "path": ["lineItems", "1697a739-f146-46d1-8324-16d10bc6b81d"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "deleteLineItem",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{bearer-token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/lineItems/a7d078e8-6102-4672-90f9-e2371ae2d788",
+          "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+          "path": ["lineItems", "a7d078e8-6102-4672-90f9-e2371ae2d788"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

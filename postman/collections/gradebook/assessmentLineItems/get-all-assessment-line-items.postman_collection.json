@@ -1,0 +1,654 @@
+{
+	"info": {
+		"_postman_id": "573b7e60-e4f5-4035-b54d-a6ebd6d4767a",
+		"name": "get-all-assessment-line-items",
+		"description": "Collection for retrieving all AssessmentLineItems with filtering and pagination",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36990357"
+	},
+	"item": [
+		{
+			"name": "GetAllAssessmentLineItems 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var template = `",
+							"<style type=\"text/css\">",
+							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}",
+							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}",
+							"    .tftable tr {background-color:#ffffff;}",
+							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}",
+							"    .tftable tr:hover {background-color:#e0ffff;}",
+							"</style>",
+							"",
+							"<table class=\"tftable\" border=\"1\">",
+							"    <tr>",
+							"        <th>Major Code</th>",
+							"        <th>Severity</th>",
+							"        <th>Description</th>",
+							"        <th>Minor Code Field Name</th>",
+							"        <th>Minor Code Field Value</th>",
+							"    </tr>",
+							"    <tr>",
+							"        <td>{{response.imsx_codeMajor}}</td>",
+							"        <td>{{response.imsx_severity}}</td>",
+							"        <td>{{response.imsx_description}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldName}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldValue}}</td>",
+							"    </tr>",
+							"</table>",
+							"`;",
+							"",
+							"function constructVisualizerPayload() {",
+							"    return {response: pm.response.json()}",
+							"}",
+							"",
+							"pm.visualizer.set(template, constructVisualizerPayload());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{bearer-token}}"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentLineItems?limit=10&offset=0&sort=sourcedId&orderBy=DESC&filter=parentAssessmentLineItem.sourcedId!='null'",
+					"host": [
+						"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+					],
+					"path": [
+						"assessmentLineItems"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "sort",
+							"value": "sourcedId"
+						},
+						{
+							"key": "orderBy",
+							"value": "DESC"
+						},
+						{
+							"key": "filter",
+							"value": "parentAssessmentLineItem.sourcedId!='null'"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllAssessmentLineItems 2 (with invalid filter keys)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var template = `",
+							"<style type=\"text/css\">",
+							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}",
+							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}",
+							"    .tftable tr {background-color:#ffffff;}",
+							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}",
+							"    .tftable tr:hover {background-color:#e0ffff;}",
+							"</style>",
+							"",
+							"<table class=\"tftable\" border=\"1\">",
+							"    <tr>",
+							"        <th>Major Code</th>",
+							"        <th>Severity</th>",
+							"        <th>Description</th>",
+							"        <th>Minor Code Field Name</th>",
+							"        <th>Minor Code Field Value</th>",
+							"    </tr>",
+							"    <tr>",
+							"        <td>{{response.imsx_codeMajor}}</td>",
+							"        <td>{{response.imsx_severity}}</td>",
+							"        <td>{{response.imsx_description}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldName}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldValue}}</td>",
+							"    </tr>",
+							"</table>",
+							"`;",
+							"",
+							"function constructVisualizerPayload() {",
+							"    return {response: pm.response.json()}",
+							"}",
+							"",
+							"pm.visualizer.set(template, constructVisualizerPayload());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{bearer-token}}"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentLineItems?filter=status='active'&limit=100&offset=0&sort=sourcedId&orderBy=DESC",
+					"host": [
+						"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+					],
+					"path": [
+						"assessmentLineItems"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "status='active'"
+						},
+						{
+							"key": "limit",
+							"value": "100"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "sort",
+							"value": "sourcedId"
+						},
+						{
+							"key": "orderBy",
+							"value": "DESC"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllAssessmentLineItems 3 (with invalid filter values)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var template = `",
+							"<style type=\"text/css\">",
+							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}",
+							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}",
+							"    .tftable tr {background-color:#ffffff;}",
+							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}",
+							"    .tftable tr:hover {background-color:#e0ffff;}",
+							"</style>",
+							"",
+							"<table class=\"tftable\" border=\"1\">",
+							"    <tr>",
+							"        <th>Major Code</th>",
+							"        <th>Severity</th>",
+							"        <th>Description</th>",
+							"        <th>Minor Code Field Name</th>",
+							"        <th>Minor Code Field Value</th>",
+							"    </tr>",
+							"    <tr>",
+							"        <td>{{response.imsx_codeMajor}}</td>",
+							"        <td>{{response.imsx_severity}}</td>",
+							"        <td>{{response.imsx_description}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldName}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldValue}}</td>",
+							"    </tr>",
+							"</table>",
+							"`;",
+							"",
+							"function constructVisualizerPayload() {",
+							"    return {response: pm.response.json()}",
+							"}",
+							"",
+							"pm.visualizer.set(template, constructVisualizerPayload());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{bearer-token}}"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentLineItems?filter=status='ACTIVE_Invalid'&limit=100&offset=0&sort=sourcedId&orderBy=DESC",
+					"host": [
+						"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+					],
+					"path": [
+						"assessmentLineItems"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "status='ACTIVE_Invalid'"
+						},
+						{
+							"key": "limit",
+							"value": "100"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "sort",
+							"value": "sourcedId"
+						},
+						{
+							"key": "orderBy",
+							"value": "DESC"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllAssessmentLineItems 4 (with invalid sort key)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var template = `",
+							"<style type=\"text/css\">",
+							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}",
+							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}",
+							"    .tftable tr {background-color:#ffffff;}",
+							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}",
+							"    .tftable tr:hover {background-color:#e0ffff;}",
+							"</style>",
+							"",
+							"<table class=\"tftable\" border=\"1\">",
+							"    <tr>",
+							"        <th>Major Code</th>",
+							"        <th>Severity</th>",
+							"        <th>Description</th>",
+							"        <th>Minor Code Field Name</th>",
+							"        <th>Minor Code Field Value</th>",
+							"    </tr>",
+							"    <tr>",
+							"        <td>{{response.imsx_codeMajor}}</td>",
+							"        <td>{{response.imsx_severity}}</td>",
+							"        <td>{{response.imsx_description}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldName}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldValue}}</td>",
+							"    </tr>",
+							"</table>",
+							"`;",
+							"",
+							"function constructVisualizerPayload() {",
+							"    return {response: pm.response.json()}",
+							"}",
+							"",
+							"pm.visualizer.set(template, constructVisualizerPayload());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{bearer-token}}"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentLineItems?filter= status='active'&limit=100&offset=0&sort=sourcedId_invalid&orderBy=DESC",
+					"host": [
+						"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+					],
+					"path": [
+						"assessmentLineItems"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": " status='active'"
+						},
+						{
+							"key": "limit",
+							"value": "100"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "sort",
+							"value": "sourcedId_invalid"
+						},
+						{
+							"key": "orderBy",
+							"value": "DESC"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllAssessmentLineItems 5 (with invalid order by value)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var template = `",
+							"<style type=\"text/css\">",
+							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}",
+							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}",
+							"    .tftable tr {background-color:#ffffff;}",
+							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}",
+							"    .tftable tr:hover {background-color:#e0ffff;}",
+							"</style>",
+							"",
+							"<table class=\"tftable\" border=\"1\">",
+							"    <tr>",
+							"        <th>Major Code</th>",
+							"        <th>Severity</th>",
+							"        <th>Description</th>",
+							"        <th>Minor Code Field Name</th>",
+							"        <th>Minor Code Field Value</th>",
+							"    </tr>",
+							"    <tr>",
+							"        <td>{{response.imsx_codeMajor}}</td>",
+							"        <td>{{response.imsx_severity}}</td>",
+							"        <td>{{response.imsx_description}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldName}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldValue}}</td>",
+							"    </tr>",
+							"</table>",
+							"`;",
+							"",
+							"function constructVisualizerPayload() {",
+							"    return {response: pm.response.json()}",
+							"}",
+							"",
+							"pm.visualizer.set(template, constructVisualizerPayload());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{bearer-token}}"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentLineItems?filter=status='active'&limit=100&offset=0&sort=sourcedId&orderBy=INVALID",
+					"host": [
+						"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+					],
+					"path": [
+						"assessmentLineItems"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "status='active'"
+						},
+						{
+							"key": "limit",
+							"value": "100"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "sort",
+							"value": "sourcedId"
+						},
+						{
+							"key": "orderBy",
+							"value": "INVALID"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllAssessmentLineItems 6 (with empty list response)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var template = `",
+							"<style type=\"text/css\">",
+							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}",
+							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}",
+							"    .tftable tr {background-color:#ffffff;}",
+							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}",
+							"    .tftable tr:hover {background-color:#e0ffff;}",
+							"</style>",
+							"",
+							"<table class=\"tftable\" border=\"1\">",
+							"    <tr>",
+							"        <th>Major Code</th>",
+							"        <th>Severity</th>",
+							"        <th>Description</th>",
+							"        <th>Minor Code Field Name</th>",
+							"        <th>Minor Code Field Value</th>",
+							"    </tr>",
+							"    <tr>",
+							"        <td>{{response.imsx_codeMajor}}</td>",
+							"        <td>{{response.imsx_severity}}</td>",
+							"        <td>{{response.imsx_description}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldName}}</td>",
+							"        <td>{{response.imsx_CodeMinor.imsx_codeMinorField.0.imsx_codeMinorFieldValue}}</td>",
+							"    </tr>",
+							"</table>",
+							"`;",
+							"",
+							"function constructVisualizerPayload() {",
+							"    return {response: pm.response.json()}",
+							"}",
+							"",
+							"pm.visualizer.set(template, constructVisualizerPayload());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{bearer-token}}"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentLineItems?filter=sourcedId='a997d0c3-d748-4dae-8a56-7c8387dc48d6'&limit=100&offset=0&sort=sourcedId&orderBy=DESC",
+					"host": [
+						"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+					],
+					"path": [
+						"assessmentLineItems"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "sourcedId='a997d0c3-d748-4dae-8a56-7c8387dc48d6'"
+						},
+						{
+							"key": "limit",
+							"value": "100"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "sort",
+							"value": "sourcedId"
+						},
+						{
+							"key": "orderBy",
+							"value": "DESC"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "x-client-id",
+			"value": "{{x-client-id}}",
+			"type": "string"
+		},
+		{
+			"key": "gradebookServiceApiPrefix",
+			"value": "/ims/oneroster/gradebook/v1p2",
+			"type": "string"
+		},
+		{
+			"key": "x-app-key",
+			"value": "{{x-app-key}}",
+			"type": "string"
+		},
+		{
+			"key": "bearerToken",
+			"value": "{{bearer-token}}",
+			"type": "string"
+		}
+	]
+}

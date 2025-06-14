@@ -1,0 +1,370 @@
+{
+	"info": {
+    "_postman_id": "440470a9-7a00-4203-8412-efd477015f48",
+    "name": "put-results",
+    "description": "Collection for updating putResults",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31022060"
+  },
+	"item": [
+    {
+      "name": "Happy Path",
+      "item": [
+        {
+          "name": "Put results",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201 Created', function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"result\": {\n        \"sourcedId\": \"{{resultSourcedId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"2025-02-12T05:36:56Z\",\n        \"metadata\": {\n            \"extensions\": {\n                \"fields\": {\n                    \"result\": {\n                        \"gradedBy\": {\n                            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/scoreScales/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n                            \"sourcedId\": \"9b1b3cce-8ebb-4801-ae6a-ca469153c098\",\n                            \"type\": \"user\"\n                        }\n                    },\n                    \"attempt\": {\n                        \"count\": 1,\n                        \"startedAtTime\": \"2025-02-12T05:33:56Z\",\n                        \"endedAtTime\": \"2025-02-12T05:36:56Z\",\n                        \"duration\": 15\n                    }\n                },\n                   \"Check\": \"check\"\n                \n            }\n        },\n        \"lineItem\": {\n            \"href\": \"/v1/lineItems/07bec07d-1500-4e4a-984d-4961a909f23b\",\n            \"sourcedId\": \"07bec07d-1500-4e4a-984d-4961a909f23b\",\n            \"type\": \"lineItem\"\n        },\n        \"scoreScale\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/scoreScales/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"6bdc7609-8992-44bc-a60f-fb06476bcf8c\",\n            \"type\": \"scoreScale\"\n        },\n        \"student\": {\n            \"href\": \"/v1/users/c5a5b907-130f-4aa2-88ca-3dccf688b627\",\n            \"sourcedId\": \"975c0aa4-7e69-481b-ac1a-19ea4385033c\",\n            \"type\": \"user\"\n        },\n        \"class\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/class/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"981c2770-eae1-4362-98b4-3b654bd5d05c\",\n            \"type\": \"class\"\n        },\n        \"scoreStatus\": \"FULLY_GRADED\",\n        \"score\": 44,\n        \"textScore\": null,\n        \"scoreDate\": \"2025-01-31\",\n        \"comment\": null,\n        \"inProgress\": true,\n        \"incomplete\": false,\n        \"late\": null,\n        \"missing\": null,\n        \"learningObjectiveSet\": null\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/results/{{resultSourcedId}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["results", "{{resultSourcedId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative Tests",
+      "item": [
+        {
+          "name": "Put results (Validation errors)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Passed', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"result\": {\n        \"sourcedId\": \"{{resultSourcedId}}\",\n        \"status\": \"ACTIV\",\n        \"dateLastModified\": \"2025-02-12T05:36:56.536\",\n        \"metadata\": {\n            \"extensions\": {\n                \"fields\": {\n                    \"attempt\": {\n                        \"count\": 1,\n                        \"metadata\": {\n                            \"extensions\": {\n                                \"Check\": \"check\"\n                            }\n                        },\n                        \"startedAtTime\": \"2025-02-12T05:36:56.536\",\n                        \"endedAtTime\": \"2025-02-12T05:36:56.536\",\n                        \"duration\": 15\n                    },\n                    \"Check\": \"check\"\n                }\n                \n            }\n        },\n        \"lineItem\": {\n            \"href\": \"/v1/lineItems/07bec07d-1500-4e4a-984d-4961a909f23\",\n            \"sourcedId\": \"07bec07d-1500-4e4a-984d-4961a909f23b\",\n            \"type\": \"lineItem\"\n        },\n        \"scoreScale\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/scoreScales/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"6bdc7609-8992-44bc-a60f-fb06476bcf8c\",\n            \"type\": \"scoreScale\"\n        },\n        \"student\": {\n            \"href\": \"/v1/users/c5a5b907-130f-4aa2-88ca-3dccf688b62\",\n            \"sourcedId\": \"975c0aa4-7e69-481b-ac1a-19ea4385033c\",\n            \"type\": \"user\"\n        },\n        \"class\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/class/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"981c2770-eae1-4362-98b4-3b654bd5d05c\",\n            \"type\": \"class\"\n        },\n        \"scoreStatus\": \"FULLY_GRADE\",\n        \"score\": \"akdmcs\",\n        \"textScore\": null,\n        \"scoreDate\": \"2025-01-31T00:00:00Z\",\n        \"comment\": null,\n        \"inProgress\": true,\n        \"incomplete\": false,\n        \"late\": null,\n        \"missing\": null,\n        \"learningObjectiveSet\": null\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/results/{{resultSourcedId}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["results", "{{resultSourcedId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put results (param not matching sourcedId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Passed', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"result\": {\n        \"sourcedId\": \"{{resultSourcedId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"2025-02-12T05:36:56Z\",\n        \"metadata\": {\n            \"extensions\": {\n                \"fields\": {\n                    \"attempt\": {\n                        \"count\": 1,\n                        \"startedAtTime\": \"2025-02-12T05:36:56Z\",\n                        \"endedAtTime\": \"2025-02-12T05:36:56Z\",\n                        \"duration\": 15\n                    }\n                },\n                 \"Check\": \"check\"\n            }\n        },\n        \"lineItem\": {\n            \"href\": \"/v1/lineItems/07bec07d-1500-4e4a-984d-4961a909f23b\",\n            \"sourcedId\": \"07bec07d-1500-4e4a-984d-4961a909f23b\",\n            \"type\": \"lineItem\"\n        },\n        \"scoreScale\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/scoreScales/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"6bdc7609-8992-44bc-a60f-fb06476bcf8c\",\n            \"type\": \"scoreScale\"\n        },\n        \"student\": {\n            \"href\": \"/v1/users/c5a5b907-130f-4aa2-88ca-3dccf688b627\",\n            \"sourcedId\": \"975c0aa4-7e69-481b-ac1a-19ea4385033c\",\n            \"type\": \"user\"\n        },\n        \"class\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/class/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"981c2770-eae1-4362-98b4-3b654bd5d05c\",\n            \"type\": \"class\"\n        },\n        \"scoreStatus\": \"FULLY_GRADED\",\n        \"score\": 44,\n        \"textScore\": null,\n        \"scoreDate\": \"2025-01-31\",\n        \"comment\": null,\n        \"inProgress\": true,\n        \"incomplete\": false,\n        \"late\": null,\n        \"missing\": null,\n        \"learningObjectiveSet\": null\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/results/{{resultSourcedId}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["results", "{{resultSourcedId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put results (Referential integrity check failuer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Passed', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"result\": {\n        \"sourcedId\": \"{{resultSourcedId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"2025-02-12T05:36:56Z\",\n        \"metadata\": {\n            \"extensions\": {\n                \"fields\": {\n                    \"result\": {\n                         \"gradedBy\": {\n                            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/scoreScales/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n                            \"sourcedId\": \"9b1b3cce-8ebb-4801-ae6a-ca469153c099\",\n                            \"type\": \"user\"\n                        }\n                    },\n                    \"attempt\": {\n                        \"count\": 1,\n                        \"startedAtTime\": \"2025-02-12T05:36:56Z\",\n                        \"endedAtTime\": \"2025-02-12T05:36:56Z\",\n                        \"duration\": 15\n                    }\n                },\n                 \"Check\": \"check\"\n            }\n        },\n        \"lineItem\": {\n            \"href\": \"/v1/lineItems/07bec07d-1500-4e4a-984d-4961a909f23b\",\n            \"sourcedId\": \"07bec07d-1500-4e4a-984d-4961a909f21b\",\n            \"type\": \"lineItem\"\n        },\n        \"scoreScale\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/scoreScales/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"6bdc7609-8992-44bc-a60f-fb06476bcf1c\",\n            \"type\": \"scoreScale\"\n        },\n        \"student\": {\n            \"href\": \"/v1/users/c5a5b907-130f-4aa2-88ca-3dccf688b627\",\n            \"sourcedId\": \"975c0aa4-7e69-481b-ac1a-19ea4385031c\",\n            \"type\": \"user\"\n        },\n        \"class\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/class/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"981c2770-eae1-4362-98b4-3b654bd5d01c\",\n            \"type\": \"class\"\n        },\n        \"scoreStatus\": \"FULLY_GRADED\",\n        \"score\": 44,\n        \"textScore\": null,\n        \"scoreDate\": \"2025-01-31\",\n        \"comment\": null,\n        \"inProgress\": true,\n        \"incomplete\": false,\n        \"late\": null,\n        \"missing\": null,\n        \"learningObjectiveSet\": null\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/results/{{resultSourcedId}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["results", "{{resultSourcedId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put results (Conflict Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Passed', function() {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"result\": {\n        \"sourcedId\": \"{{resultSourcedId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"2025-02-12T05:36:56Z\",\n        \"metadata\": {\n            \"extensions\": {\n                \"fields\": {\n                    \"attempt\": {\n                        \"count\": 1,\n                        \"startedAtTime\": \"2025-02-12T05:36:56Z\",\n                        \"endedAtTime\": \"2025-02-12T05:36:56Z\",\n                        \"duration\": 15\n                    }\n                },\n                 \"Check\": \"check\"\n            }\n        },\n        \"lineItem\": {\n            \"href\": \"/v1/lineItems/07bec07d-1500-4e4a-984d-4961a909f23b\",\n            \"sourcedId\": \"07bec07d-1500-4e4a-984d-4961a909f23b\",\n            \"type\": \"lineItem\"\n        },\n        \"scoreScale\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/scoreScales/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"6bdc7609-8992-44bc-a60f-fb06476bcf8c\",\n            \"type\": \"scoreScale\"\n        },\n        \"student\": {\n            \"href\": \"/v1/users/c5a5b907-130f-4aa2-88ca-3dccf688b627\",\n            \"sourcedId\": \"975c0aa4-7e69-481b-ac1a-19ea4385033c\",\n            \"type\": \"user\"\n        },\n        \"class\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/class/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"981c2770-eae1-4362-98b4-3b654bd5d05c\",\n            \"type\": \"class\"\n        },\n        \"scoreStatus\": \"FULLY_GRADED\",\n        \"score\": 44,\n        \"textScore\": null,\n        \"scoreDate\": \"2025-01-31\",\n        \"comment\": null,\n        \"inProgress\": true,\n        \"incomplete\": false,\n        \"late\": null,\n        \"missing\": null,\n        \"learningObjectiveSet\": null\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/results/{{resultSourcedId}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["results", "{{resultSourcedId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put results (Not Found Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Passed', function() {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"result\": {\n        \"sourcedId\": \"{{resultSourcedId}}\",\n        \"status\": \"active\",\n        \"dateLastModified\": \"2025-02-12T05:36:56Z\",\n        \"metadata\": {\n            \"extensions\": {\n                \"fields\": {\n                    \"result\": {\n                        \"gradedBy\": {\n                            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/scoreScales/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n                            \"sourcedId\": \"9b1b3cce-8ebb-4801-ae6a-ca469153c098\",\n                            \"type\": \"user\"\n                        }\n                    },\n                    \"attempt\": {\n                        \"count\": 1,\n                        \"startedAtTime\": \"2025-02-12T05:36:56Z\",\n                        \"endedAtTime\": \"2025-02-12T05:36:56Z\",\n                        \"duration\": 15\n                    }\n                },\n                   \"Check\": \"check\"\n                \n            }\n        },\n        \"lineItem\": {\n            \"href\": \"/v1/lineItems/07bec07d-1500-4e4a-984d-4961a909f23b\",\n            \"sourcedId\": \"07bec07d-1500-4e4a-984d-4961a909f23b\",\n            \"type\": \"lineItem\"\n        },\n        \"scoreScale\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/scoreScales/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"6bdc7609-8992-44bc-a60f-fb06476bcf2c\",\n            \"type\": \"scoreScale\"\n        },\n        \"student\": {\n            \"href\": \"/v1/users/c5a5b907-130f-4aa2-88ca-3dccf688b627\",\n            \"sourcedId\": \"975c0aa4-7e69-481b-ac1a-19ea4385032c\",\n            \"type\": \"user\"\n        },\n        \"class\": {\n            \"href\": \"http://alpha-lr-lb-dev-1161579566.ap-south-1.elb.amazonaws.com/v1/class/4a3947aa-1c86-4564-9cde-74957a5c99bb\",\n            \"sourcedId\": \"981c2770-eae1-4362-98b4-3b654bd5d02c\",\n            \"type\": \"class\"\n        },\n        \"scoreStatus\": \"FULLY_GRADED\",\n        \"score\": 44,\n        \"textScore\": null,\n        \"scoreDate\": \"2025-01-31\",\n        \"comment\": null,\n        \"inProgress\": true,\n        \"incomplete\": false,\n        \"late\": null,\n        \"missing\": null,\n        \"learningObjectiveSet\": null\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/results/{{resultSourcedId}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["results", "{{resultSourcedId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+	"variable": [
+		{
+			"key": "resultSourcedId",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

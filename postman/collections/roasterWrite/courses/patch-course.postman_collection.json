@@ -1,0 +1,625 @@
+{
+	"info": {
+		"_postman_id": "ca22a683-5504-4a68-a419-cd79a06def3b",
+		"name": "patchCourse",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36990357"
+	},
+	"item": [
+		{
+			"name": "Happy Path Scenarios",
+			"item": [
+				{
+					"name": "Update with All Valid Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"title\": \"Introduction to Algebra\", \"courseCode\": \"M01\", \"grades\": [\"2\",\"1\"], \"subjects\": [\"Maths Part-1\",\"Maths Part-2\"], \"subjectCodes\": [\"M01\", \"M02\"], \"metadata\": {\"name\":\"algebra\"}, \"org\": { \"href\": \"org/{{orgSourcedId}}\", \"sourcedId\": \"{{orgSourcedId}}\", \"type\": \"org\" }, \"schoolYear\": { \"href\": \"academicSession/{{academicSessionSourcedId}}\", \"sourcedId\": \"{{academicSessionSourcedId}}\", \"type\": \"academicSession\" }, \"resources\": [] }"
+						},
+						"url": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/courses/{{validSourceId}}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Tests",
+			"item": [
+				{
+					"name": "Invalid UUID Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response contains correct message\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('invalid_request_body');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"title\": \"Introduction to Algebra\", \"courseCode\": \"M01\", \"grades\": [\"2\",\"1\"], \"subjects\": [\"Maths Part-1\",\"Maths Part-2\"], \"subjectCodes\": [\"M01\", \"M02\"], \"metadata\": {\"name\":\"algebra\"}, \"org\": { \"href\": \"org/{{orgSourcedId}}\", \"sourcedId\": \"{{orgSourcedId}}\", \"type\": \"org\" }, \"schoolYear\": { \"href\": \"academicSession/{{academicSessionSourcedId}}\", \"sourcedId\": \"{{academicSessionSourcedId}}\", \"type\": \"academicSession\" }, \"resources\": [] }"
+						},
+						"url": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/courses/{{validSourceId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Empty String in the fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response contains correct message\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description')",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('invalid_request_body');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"title\": \"\", \"courseCode\": \"M01\", \"grades\": [\"2\",\"1\"], \"subjects\": [\"Maths Part-1\",\"Maths Part-2\"], \"subjectCodes\": [\"M01\", \"M02\"], \"metadata\": {\"name\":\"algebra\"}, \"org\": { \"href\": \"org/{{orgSourcedId}}\", \"sourcedId\": \"{{orgSourcedId}}\", \"type\": \"org\" }, \"schoolYear\": { \"href\": \"academicSession/{{academicSessionSourcedId}}\", \"sourcedId\": \"{{academicSessionSourcedId}}\", \"type\": \"academicSession\" }, \"resources\": [] }"
+						},
+						"url": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/courses/{{validSourceId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-existent Org",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error response contains correct message\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description')",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('unknownobject');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"title\": \"Introduction to Algebra\", \"courseCode\": \"M01\", \"grades\": [\"2\",\"1\"], \"subjects\": [\"Maths Part-1\",\"Maths Part-2\"], \"subjectCodes\": [\"M01\", \"M02\"], \"metadata\": {\"name\":\"algebra\"}, \"org\": { \"href\": \"org/{{orgSourcedId}}\", \"sourcedId\": \"{{orgSourcedId}}\", \"type\": \"org\" }, \"schoolYear\": { \"href\": \"academicSession/{{academicSessionSourcedId}}\", \"sourcedId\": \"{{academicSessionSourcedId}}\", \"type\": \"academicSession\" }, \"resources\": [] }"
+						},
+						"url": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/courses/{{validSourceId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-existent SchoolYear",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error response contains correct message\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description')",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('unknownobject');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"title\": \"Introduction to Algebra\", \"courseCode\": \"M01\", \"grades\": [\"2\",\"1\"], \"subjects\": [\"Maths Part-1\",\"Maths Part-2\"], \"subjectCodes\": [\"M01\", \"M02\"], \"metadata\": {\"name\":\"algebra\"}, \"org\": { \"href\": \"org/{{orgSourcedId}}\", \"sourcedId\": \"{{orgSourcedId}}\", \"type\": \"org\" }, \"schoolYear\": { \"href\": \"academicSession/{{academicSessionSourcedId}}\", \"sourcedId\": \"{{academicSessionSourcedId}}\", \"type\": \"academicSession\" }, \"resources\": [] }"
+						},
+						"url": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/courses/{{validSourceId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Unauthorized Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Error response structure is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+									"    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('unauthorisedrequest');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/courses/{{validSourceId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Course does not exist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error response contains correct message\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description')",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('unknownobject');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"title\": \"Introduction to Algebra\", \"courseCode\": \"M01\", \"grades\": [\"2\",\"1\"], \"subjects\": [\"Maths Part-1\",\"Maths Part-2\"], \"subjectCodes\": [\"M01\", \"M02\"], \"metadata\": {\"name\":\"algebra\"}, \"org\": { \"href\": \"org/{{orgSourcedId}}\", \"sourcedId\": \"{{orgSourcedId}}\", \"type\": \"org\" }, \"schoolYear\": { \"href\": \"academicSession/{{academicSessionSourcedId}}\", \"sourcedId\": \"{{academicSessionSourcedId}}\", \"type\": \"academicSession\" }, \"resources\": [] }"
+						},
+						"url": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/courses/{{validSourceId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Resources list is not empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response contains correct message\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description')",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('invalid_request_body');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"title\": \"Introduction to Algebra\", \"courseCode\": \"M01\", \"grades\": [\"2\",\"1\"], \"subjects\": [\"Maths Part-1\",\"Maths Part-2\"], \"subjectCodes\": [\"M01\", \"M02\"], \"metadata\": {\"name\":\"algebra\"}, \"org\": { \"href\": \"org/{{orgSourcedId}}\", \"sourcedId\": \"{{orgSourcedId}}\", \"type\": \"org\" }, \"schoolYear\": { \"href\": \"academicSession/{{academicSessionSourcedId}}\", \"sourcedId\": \"{{academicSessionSourcedId}}\", \"type\": \"academicSession\" }, \"resources\": [{ \"href\": \"resources/{{resourceSourcedId}}\", \"sourcedId\": \"{{resourceSourcedId}}\", \"type\": \"resources\" }] }"
+						},
+						"url": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/courses/{{validSourceId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Unequal length of subjects and subjectCodes list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response contains correct message\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description')",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('bad_request');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"title\": \"Introduction to Algebra\", \"courseCode\": \"M01\", \"grades\": [\"2\",\"1\"], \"subjects\": [\"Maths Part-1\",\"Maths Part-2\"], \"subjectCodes\": [\"M01\"], \"metadata\": {\"name\":\"algebra\"}, \"org\": { \"href\": \"org/{{orgSourcedId}}\", \"sourcedId\": \"{{orgSourcedId}}\", \"type\": \"org\" }, \"schoolYear\": { \"href\": \"academicSession/{{academicSessionSourcedId}}\", \"sourcedId\": \"{{academicSessionSourcedId}}\", \"type\": \"academicSession\" }, \"resources\": [] }"
+						},
+						"url": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/courses/{{validSourceId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Empty body in the payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response contains correct message\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description')",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('bad_request');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/courses/{{validSourceId}}"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "x-client-id",
+			"value": "{{x-client-id}}",
+			"type": "string"
+		},
+		{
+			"key": "rosteringWriteServiceApiPrefix",
+			"value": "/custom/rostering/v1p0",
+			"type": "string"
+		},
+		{
+			"key": "x-app-key",
+			"value": "{{x-app-key}}",
+			"type": "string"
+		},
+		{
+			"key": "bearerToken",
+			"value": "{{bearer-token}}",
+			"type": "string"
+		},
+		{
+			"key": "validSourceId",
+			"value": "<valid-sourced-id>",
+			"type": "string"
+		},
+		{
+			"key": "invalidClassSourcedId",
+			"value": "<invalid-class-sourced-id>",
+			"type": "string"
+		}
+	]
+}

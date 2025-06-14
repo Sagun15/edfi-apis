@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "82ee0171-9b9e-49a2-9c1d-4f38e1f26295",
+		"name": "Academic Sessions Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25448387",
+		"_collection_link": "https://alpha6-9004.postman.co/workspace/LearnRestApi~6ec28d3c-cd15-4ccf-a4ff-352427d1a097/collection/25448387-82ee0171-9b9e-49a2-9c1d-4f38e1f26295?action=share&source=collection_link&creator=25448387"
+	},
+	"item": [
+		{
+			"name": "get-all-academic-sessions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{bearer-token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{rosteringServiceApiPrefix}}/academicSessions",
+					"host": [
+						"{{baseUrl}}{{rosteringServiceApiPrefix}}"
+					],
+					"path": [
+						"academicSessions"
+					],
+					"query": [
+						{
+							"key": "sort",
+							"value": "name",
+							"disabled": true
+						},
+						{
+							"key": "orderBy",
+							"value": "DESC",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "filter",
+							"value": "status=\"active\"",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+			},
+			"response": []
+		},
+		{
+			"name": "get-academic-session",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{bearer-token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{rosteringServiceApiPrefix}}/academicSessions/{{validSourceId}}",
+					"host": [
+						"{{baseUrl}}{{rosteringServiceApiPrefix}}"
+					],
+					"path": [
+						"academicSessions",
+						"{{validSourceId}}"
+					],
+					"query": [
+						{
+							"key": "sort",
+							"value": "name",
+							"disabled": true
+						},
+						{
+							"key": "orderBy",
+							"value": "DESC",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "filter",
+							"value": "status=\"active\"",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "validSourceId",
+			"value": "<valid-sourced-id>",
+			"type": "string"
+		}
+	]
+}

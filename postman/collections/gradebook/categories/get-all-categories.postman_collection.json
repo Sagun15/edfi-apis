@@ -1,0 +1,1214 @@
+{
+	"info": {
+		"_postman_id": "9e01b573-dc11-4e33-a591-fd6e774605c9",
+		"name": "Categories GET API Tests",
+		"description": "Test suite for Categories GET API focusing on happy paths with selective negative cases",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36990357"
+	},
+	"item": [
+		{
+			"name": "Happy Path Tests",
+			"item": [
+				{
+					"name": "Get Categories - Basic",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response structure is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('categories').that.is.an('array');",
+									"    ",
+									"    if (responseData.categories.length > 0) {",
+									"        const firstCategory = responseData.categories[0];",
+									"        pm.expect(firstCategory).to.have.property('sourcedId');",
+									"        pm.expect(firstCategory).to.have.property('status');",
+									"        pm.expect(firstCategory).to.have.property('dateLastModified');",
+									"        pm.expect(firstCategory).to.have.property('title');",
+									"        pm.expect(firstCategory).to.have.property('weight');",
+									"    }",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories - With Pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Pagination is working correctly\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.categories.length).to.be.at.most(2);",
+									"});",
+									"",
+									"pm.test(\"Headers are present\", function () {",
+									"    pm.response.to.have.header('X-Total-Count');",
+									"",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?limit=2&offset=1",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "offset",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories - With Sorting",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Results are sorted correctly in reverse order\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.categories).to.be.an('array').that.is.not.empty;",
+									"",
+									"    if (responseData.categories.length > 1) {",
+									"        const titles = responseData.categories.map(category => category.title);",
+									"        const sortedTitles = [...titles].sort().reverse();",
+									"        pm.expect(titles).to.eql(sortedTitles);",
+									"    }",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?sort=title&orderBy=DESC",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title"
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories  - Contains Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Contains filter is applied correctly\", function () {",
+									"    const responseData = pm.response.json();",
+									"    responseData.categories.forEach(function(category) {",
+									"        pm.expect(category.title).to.include('Exam');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?filter=title~'Exam'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "title~'Exam'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories - With Multiple Filers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Categories have correct 'status' and 'title'\", function () {",
+									"    var categories = pm.response.json().categories;",
+									"    pm.expect(categories).to.be.an('array').that.is.not.empty;",
+									"    categories.forEach(function(category) {",
+									"        pm.expect(category).to.have.property('status', 'ACTIVE');",
+									"        pm.expect(category).to.have.property('title', 'Final Exam');",
+									"    });",
+									"});",
+									"pm.test(\"Response body has valid 'imsx_codeMajor' and 'imsx_severity'\", function () {",
+									"    pm.expect(pm.response.json().imsx_codeMajor).to.equal(\"success\");",
+									"    pm.expect(pm.response.json().imsx_severity).to.equal(\"status\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?filter=status='active' AND title='Final Exam'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "status='active' AND title='Final Exam'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories  - Multiple Conditions with AND",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Filter conditions are applied correctly\", function () {",
+									"    const responseData = pm.response.json();",
+									"    responseData.categories.forEach(function(category) {",
+									"        pm.expect(category.status).to.equal('ACTIVE');",
+									"        pm.expect(category.weight).to.be.above(0.3);",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?filter=status='active' AND weight>'0.3'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "status='active' AND weight>'0.3'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories - With Single Filers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test 1: Check if the response status code is 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test 3: Loop through each category and check if weight is less than or equal to 0.2",
+									"pm.test(\"Check weight of each category\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    for (var i = 0; i < jsonData.categories.length; i++) {",
+									"        pm.expect(jsonData.categories[i].weight).to.be.lte(0.2);",
+									"    }",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?filter=weight<='0.2'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "weight<='0.2'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories - Fields Selection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test for status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test for response body schema/properties",
+									"pm.test(\"Response body has valid schema\", function () {",
+									"    pm.response.to.have.jsonSchema({",
+									"        type: \"object\",",
+									"        properties: {",
+									"            imsx_codeMajor: { type: \"string\" },",
+									"            imsx_severity: { type: \"string\" },",
+									"            categories: {",
+									"                type: \"array\",",
+									"                items: {",
+									"                    type: \"object\",",
+									"                    properties: {",
+									"                        title: { type: \"string\" },",
+									"                        weight: { type: \"number\" }",
+									"                    },",
+									"                    required: [\"title\", \"weight\"]",
+									"                }",
+									"            }",
+									"        },",
+									"        required: [\"imsx_codeMajor\", \"imsx_severity\", \"categories\"]",
+									"    });",
+									"});",
+									"",
+									"// Test for response headers",
+									"pm.test(\"Content-Type is present in response headers\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?sort=title&orderBy=ASC&fields=title,weight",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title"
+								},
+								{
+									"key": "orderBy",
+									"value": "ASC"
+								},
+								{
+									"key": "fields",
+									"value": "title,weight"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Tests",
+			"item": [
+				{
+					"name": "Invalid Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Error response structure is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+									"    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description').equal('Missing required headers');",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    ",
+									"    const errorField = responseData.imsx_CodeMinor.imsx_codeMinorField[0];",
+									"    pm.expect(errorField).to.have.property('imsx_codeMinorFieldName').equal('TargetEndSystem');",
+									"    pm.expect(errorField).to.have.property('imsx_codeMinorFieldValue').equal('unauthorisedrequest');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Filter Field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response for invalid field\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue)",
+									"        .to.equal('invalid_filter_field');",
+									"});",
+									"",
+									"pm.test(\"Error description for invalid field\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_description).to.equal(\"The provided filter field 'invalidField' is invalid or not supported.\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?filter=invalidField='value'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "invalidField='value'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "More than 2 filters",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response for invalid field\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue)",
+									"        .to.equal('bad_request'); // Updated to match the actual response value",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?filter=dateLastModified>'2023-13-45' AND title~'Exam' AND weight='0.4'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "dateLastModified>'2023-13-45' AND title~'Exam' AND weight='0.4'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "missing sort - Invalid Sorting",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Check if orderBy requires sort field\", function () {",
+									"    pm.expect(pm.response.json().imsx_description).to.equal(\"When orderBy is provided, sort field is required\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?orderBy=DESC",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "orderBy",
+									"value": "DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid sort - Invalid Sorting",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response body contains error message for invalid sort parameter\", function () {",
+									"    const responseBody = pm.response.json();",
+									"    pm.expect(responseBody.imsx_description).to.include(\"Invalid sort field\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?sort=invalidsort&orderBy=DESC",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "invalidsort"
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid limit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response body contains the expected description",
+									"pm.test(\"Response body should contain the expected description\", function () {",
+									"    pm.expect(pm.response.json().imsx_description).to.eql(\"Limit must be a positive number\");",
+									"});",
+									"",
+									"// Check if the response status code is 400",
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?limit=-2&offset=1",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "-2"
+								},
+								{
+									"key": "offset",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "No offset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response body contains the \"imsx_description\" field with the value \"Limit and offset must be provided together\"",
+									"pm.test(\"Check imsx_description field value\", function () {",
+									"    pm.expect(pm.response.json().imsx_description).to.eql(\"Limit and offset must be provided together\");",
+									"});",
+									"// Check the response status code",
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?limit=2",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Filter Syntax",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response for invalid filter syntax\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData.imsx_description).to.equal('Invalid filter format: weight>>0.3');",
+									"    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.equal('bad_request');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?filter=weight>>0.3",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "weight>>0.3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"All fields are returned\", function () {",
+									"    pm.response.to.have.jsonBody('imsx_codeMajor');",
+									"    pm.response.to.have.jsonBody('imsx_severity');",
+									"    pm.response.to.have.jsonBody('categories');",
+									"    pm.response.to.have.jsonBody('categories[0].sourcedId');",
+									"    pm.response.to.have.jsonBody('categories[0].status');",
+									"    pm.response.to.have.jsonBody('categories[0].dateLastModified');",
+									"    pm.response.to.have.jsonBody('categories[0].title');",
+									"    pm.response.to.have.jsonBody('categories[0].weight');",
+									"    pm.response.to.have.jsonBody('categories[0].metadata');",
+									"    pm.response.to.have.jsonBody('categories[0].metadata.extensions');",
+									"    pm.response.to.have.jsonBody('categories[0].metadata.extensions.description');",
+									"    pm.response.to.have.jsonBody('categories[0].metadata.extensions.maxScore');",
+									"    pm.response.to.have.jsonBody('categories[1].sourcedId');",
+									"    pm.response.to.have.jsonBody('categories[1].status');",
+									"    pm.response.to.have.jsonBody('categories[1].dateLastModified');",
+									"    pm.response.to.have.jsonBody('categories[1].title');",
+									"    pm.response.to.have.jsonBody('categories[1].weight');",
+									"    pm.response.to.have.jsonBody('categories[1].metadata');",
+									"    pm.response.to.have.jsonBody('categories[1].metadata.extensions');",
+									"    pm.response.to.have.jsonBody('categories[1].metadata.extensions.description');",
+									"    pm.response.to.have.jsonBody('categories[1].metadata.extensions.maxScore');",
+									"    pm.response.to.have.jsonBody('categories[2].sourcedId');",
+									"    pm.response.to.have.jsonBody('categories[2].status');",
+									"    pm.response.to.have.jsonBody('categories[2].dateLastModified');",
+									"    pm.response.to.have.jsonBody('categories[2].title');",
+									"    pm.response.to.have.jsonBody('categories[2].weight');",
+									"    pm.response.to.have.jsonBody('categories[2].metadata');",
+									"    pm.response.to.have.jsonBody('categories[2].metadata.extensions');",
+									"    pm.response.to.have.jsonBody('categories[2].metadata.extensions.description');",
+									"    pm.response.to.have.jsonBody('categories[2].metadata.extensions.maxScore');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?fields=invalid_field",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "invalid_field"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Malformed Field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response for invalid filter syntax\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+									"    pm.expect(responseData.imsx_severity).to.equal('error');",
+									"    pm.expect(responseData.imsx_description).to.equal('Malformed fields parameter');",
+									"    ",
+									"    // Loop through all code minor fields and assert their values",
+									"    responseData.imsx_CodeMinor.imsx_codeMinorField.forEach(field => {",
+									"        pm.expect(field.imsx_codeMinorFieldValue).to.be.a('string');",
+									"        pm.expect(field.imsx_codeMinorFieldName).to.equal('TargetEndSystem');",
+									"    });",
+									"});",
+									"// No new script is generated as the existing tests already cover the provided response data",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/categories?fields=title metadata",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "title metadata"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "x-client-id",
+			"value": "{{x-client-id}}",
+			"type": "string"
+		},
+		{
+			"key": "gradebookServiceApiPrefix",
+			"value": "/ims/oneroster/gradebook/v1p2",
+			"type": "string"
+		},
+		{
+			"key": "x-app-key",
+			"value": "{{x-app-key}}",
+			"type": "string"
+		},
+		{
+			"key": "bearerToken",
+			"value": "{{bearer-token}}",
+			"type": "string"
+		}
+	]
+}

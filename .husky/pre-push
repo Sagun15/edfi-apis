@@ -1,0 +1,32 @@
+#!/bin/bash
+protected_branches=("main" "develop")
+
+# Read the push reference details
+while read local_ref local_sha remote_ref remote_sha
+do
+    branch_name=$(echo $remote_ref | sed 's|refs/heads/||')
+
+    # Check if the push is targeting a protected branch
+    if [[ " ${protected_branches[@]} " =~ " ${branch_name} " ]]; then
+        echo "🚨 ERROR: Pushing directly to '${branch_name}' is not allowed!"
+        echo "Please create a pull request instead."
+        echo ""
+        echo "🔄 To move your commit to a feature branch and restore '${branch_name}', follow these steps:"
+        echo ""
+        echo "1️⃣ Create a new branch at your current commit:"
+        echo "   git checkout -b feature/your-feature-name"
+        echo ""
+        echo "2️⃣ Push the new branch:"
+        echo "   git push origin feature/your-feature-name"
+        echo ""
+        echo "3️⃣ Go back to the protected branch:"
+        echo "   git checkout ${branch_name}"
+        echo ""
+        echo "4️⃣ Reset the protected branch to its last remote state:"
+        echo "   git reset --hard origin/${branch_name}"
+        echo ""
+        exit 1
+    fi
+
+    echo "✅ Successfully pushing to '${branch_name}'"
+done

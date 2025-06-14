@@ -1,0 +1,867 @@
+{
+	"info": {
+    "_postman_id": "41860dee-f13d-4298-91b7-f2187dfcf1c1",
+    "name": "patch-users",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31022060"
+  },
+	"item": [
+    {
+      "name": "positive testcases",
+      "item": [
+        {
+          "name": "Update with valid fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204 No Content\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Advanced Fun\",\n    \"subjects\": [\n        \"Mathematics\", \"Physics\"\n    ],\n    \"subjectCodes\": [\"ABC\", \"BCD\"],\n    \"course\": {\n        \"href\": \"/v1/courses/d07be0a4-bfb1-41b6-b91b-52f757be3549\",\n        \"sourcedId\": \"d07be0a4-bfb1-41b6-b91b-52f757be3549\",\n        \"type\": \"course\"\n    },\n    \"school\": {\n        \"href\": \"/v1/organizations/91edfc73-d1ab-4168-93de-85a71d7f318d\",\n        \"sourcedId\": \"91edfc73-d1ab-4168-93de-85a71d7f318d\",\n        \"type\": \"org\"\n    },\n    \"terms\": [{\n        \"href\": \"/v1/academicSessions/4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"sourcedId\": \"4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"type\": \"academicSession\"\n    }],\n    \"periods\": [\n        \"p3\"\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/classes/{{classSourceId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["classes", "{{classSourceId}}"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "title",
+                  "disabled": true
+                },
+                {
+                  "key": "orderBy",
+                  "value": "DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "filter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "sourcedId,grades,title,subjects,subjectCodes",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negetive testcases",
+      "item": [
+        {
+          "name": "Invalid UUID format",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status test\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "    pm.expect(res.imsx_description).to.equal(\"agents.0.Sourced Id must be of type UUID, agents.1.Sourced Id must be of type UUID, primaryOrg.Sourced Id must be of type UUID\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"metadata\": {\n        \"customField1\": \"value1\",\n        \"customField2\": \"value2\"\n    },\n    \"givenName\": \"John\",\n    \"familyName\": \"Doe\",\n    \"middleName\": \"Michael\",\n    \"preferredFirstName\": \"Johnny\",\n    \"preferredMiddleName\": \"Mike\",\n    \"preferredLastName\": \"D.\",\n    \"pronouns\": \"he/him\",\n    \"email\": \"john.doe@example.com\",\n    \"sms\": \"+1234567890\",\n    \"phone\": \"+0987654321\",\n    \"agents\": [\n        {\n            \"href\": \"https://example.com/agents/1\",\n            \"sourcedId\": \"b38b5-9ecf-495f-b44e-850c34495174\",\n            \"type\": \"user\"\n        },\n        {\n            \"href\": \"https://example.com/agents/1\",\n            \"sourcedId\": \"a38f5-9ecf-495f-b44e-850c34495174\",\n            \"type\": \"user\"\n        }\n    ],\n    \"primaryOrg\": {\n        \"href\": \"https://example.com/orgs/1\",\n        \"sourcedId\": \"91ed73-d1ab-4168-93de-85a71d7f318d\",\n        \"type\": \"org\"\n    },\n    \"grades\": [\n        \"Grade 10\",\n        \"Grade 11\"\n    ],\n    \"demographics\": {\n        \"metadata\": {\n            \"extensions\": {\n                \"fields\": {\n                    \"demographicCustomField\": \"demoValue\"\n                }\n            }\n        },\n        \"birthDate\": \"2025-02-28\",\n        \"sex\": \"MALE\",\n        \"americanIndianOrAlaskaNative\": true,\n        \"asian\": true,\n        \"blackOrAfricanAmerican\": true,\n        \"nativeHawaiianOrOtherPacificIslander\": true,\n        \"white\": true,\n        \"demographicRaceTwoOrMoreRaces\": false,\n        \"hispanicOrLatinoEthnicity\": false,\n        \"countryOfBirthCode\": \"string\",\n        \"stateOfBirthAbbreviation\": \"string\",\n        \"cityOfBirth\": \"string\",\n        \"publicSchoolResidenceStatus\": \"string\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourceId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{userSourceId}}"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "title",
+                  "disabled": true
+                },
+                {
+                  "key": "orderBy",
+                  "value": "DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "filter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "sourcedId,grades,title,subjects,subjectCodes",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+          },
+          "response": []
+        },
+        {
+          "name": "empty name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.imsx_description).to.equal(\"givenName should not be empty\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"givenName\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourceId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{userSourceId}}"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "title",
+                  "disabled": true
+                },
+                {
+                  "key": "orderBy",
+                  "value": "DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "filter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "sourcedId,grades,title,subjects,subjectCodes",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid org",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status test\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"primaryOrg\": {\n        \"href\": \"https://example.com/orgs/1\",\n        \"sourcedId\": \"91edfc73-d1ab-4168-93de-85a71d7f311d\",\n        \"type\": \"org\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourceId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{userSourceId}}"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "title",
+                  "disabled": true
+                },
+                {
+                  "key": "orderBy",
+                  "value": "DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "filter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "sourcedId,grades,title,subjects,subjectCodes",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid agent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status test\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"agents\": [\n        {\n            \"href\": \"https://example.com/agents/1\",\n            \"sourcedId\": \"b38fe4b5-9ecf-495f-b44e-850c34195174\",\n            \"type\": \"user\"\n        },\n        {\n            \"href\": \"https://example.com/agents/1\",\n            \"sourcedId\": \"a38fe4b5-9ecf-495f-b44e-850c34491174\",\n            \"type\": \"user\"\n        }\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourceId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{userSourceId}}"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "title",
+                  "disabled": true
+                },
+                {
+                  "key": "orderBy",
+                  "value": "DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "filter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "sourcedId,grades,title,subjects,subjectCodes",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid demo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status test\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"demographics\": {\n        \"metadata\": {\n            \"extensions\": {\n                \"fields\": {\n                    \"demographicCustomField\": \"demoValue\"\n                }\n            }\n        },\n        \"birthDate\": \"2025-02-28\",\n        \"sex\": \"MALE\",\n        \"americanIndianOrAlaskaNative\": true,\n        \"asian\": true,\n        \"blackOrAfricanAmerican\": true,\n        \"nativeHawaiianOrOtherPacificIslander\": true,\n        \"white\": true,\n        \"demographicRaceTwoOrMoreRaces\": false,\n        \"hispanicOrLatinoEthnicity\": false,\n        \"countryOfBirthCode\": \"string\",\n        \"stateOfBirthAbbreviation\": \"string\",\n        \"cityOfBirth\": \"string\",\n        \"publicSchoolResidenceStatus\": \"string\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourceId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{userSourceId}}"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "title",
+                  "disabled": true
+                },
+                {
+                  "key": "orderBy",
+                  "value": "DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "filter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "sourcedId,grades,title,subjects,subjectCodes",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+          },
+          "response": []
+        },
+        {
+          "name": "empty demographic body",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status test\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.imsx_description).to.equal(\"Demographics cannot be empty. At least one field must be provided for an update.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"demographics\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourceId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{userSourceId}}"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "title",
+                  "disabled": true
+                },
+                {
+                  "key": "orderBy",
+                  "value": "DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "filter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "sourcedId,grades,title,subjects,subjectCodes",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+          },
+          "response": []
+        },
+        {
+          "name": "user doesn't exists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status test\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"demographics\": {\n        \"metadata\": {\n            \"extensions\": {\n                \"fields\": {\n                    \"demographicCustomField\": \"demoValue\"\n                }\n            }\n        },\n        \"birthDate\": \"2025-02-28\",\n        \"sex\": \"MALE\",\n        \"americanIndianOrAlaskaNative\": true,\n        \"asian\": true,\n        \"blackOrAfricanAmerican\": true,\n        \"nativeHawaiianOrOtherPacificIslander\": true,\n        \"white\": true,\n        \"demographicRaceTwoOrMoreRaces\": false,\n        \"hispanicOrLatinoEthnicity\": false,\n        \"countryOfBirthCode\": \"string\",\n        \"stateOfBirthAbbreviation\": \"string\",\n        \"cityOfBirth\": \"string\",\n        \"publicSchoolResidenceStatus\": \"string\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourceId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{userSourceId}}"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "title",
+                  "disabled": true
+                },
+                {
+                  "key": "orderBy",
+                  "value": "DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "filter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "sourcedId,grades,title,subjects,subjectCodes",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Empty Body",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status test\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.imsx_description).to.equal(\"Request body cannot be empty. At least one field must be provided for an update.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourceId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{userSourceId}}"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "title",
+                  "disabled": true
+                },
+                {
+                  "key": "orderBy",
+                  "value": "DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "filter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "sourcedId,grades,title,subjects,subjectCodes",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Authentication/Authorization Tests",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status test\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourceId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{userSourceId}}"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "title",
+                  "disabled": true
+                },
+                {
+                  "key": "orderBy",
+                  "value": "DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "filter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "sourcedId,grades,title,subjects,subjectCodes",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

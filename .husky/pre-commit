@@ -1,0 +1,8 @@
+# Run the Husky pre-commit hook only when files in the 'two-hour-learning-one-edtech-api/src' folder are modified.
+if git diff --name-only --cached | grep 'two-hour-learning-one-edtech-api/src';
+  then
+    cd two-hour-learning-one-edtech-api
+    yarn run lint
+    yarn run format
+    yarn run test
+fi

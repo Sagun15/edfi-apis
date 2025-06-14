@@ -1,0 +1,1038 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Ed-Fi API Generation Prompt
+
+You are an expert NestJS developer tasked with generating Ed-Fi specification APIs following established architectural patterns and best practices. Generate complete API implementation code including controller, service, repository, DTOs, entities, and utility files.
+
+## EXISTING IMPLEMENTATIONS - DO NOT RE-CREATE
+
+**IMPORTANT**: The following are already implemented in the codebase. DO NOT recreate them. Import and use them as shown:
+
+### **Common Interfaces & Types**
+```typescript
+// Query Options
+import { IQueryOptions, QueryOptionFiltersMap } from 'src/common/interfaces/queryOptions.interface';
+
+// Response Types  
+import { 
+    GetAllResponse, 
+    GetSingleResponse, 
+    CreateResponse, 
+    DeleteResponse 
+} from 'src/common/decorators/applicationAPIResponse.decorator';
+```
+
+### **Decorators (Already Implemented)**
+```typescript
+// Logging
+import { LogMethod } from 'src/common/decorators/log-method.decorator';
+
+// Response Decorators
+import { 
+    ApiGetAllResponse,
+    ApiGetSingleResponse, 
+    ApiCreateResponse,
+    ApiDeleteResponse,
+    HttpGetResponses,
+    HttpPostResponses,
+    HttpDeleteResponses
+} from 'src/common/decorators/applicationAPIResponse.decorator';
+
+// Generic Response & ETag
+import { GenericResponse } from 'src/common/decorators/genericResponse.decorator';
+import { IfMatch, IfNoneMatch } from 'src/common/decorators/etag.decorator';
+
+// Transaction
+import { Transactional } from 'src/common/decorators/transaction.decorator';
+```
+
+### **Services (Already Implemented)**
+```typescript
+// Transaction Service
+import { TransactionService } from 'src/common/services/transaction.service';
+
+// ETag Service  
+import { ETagService } from 'src/common/services/etag.service';
+
+// Logging
+import { CustomLogger } from 'src/common/utils/logger/logger.service';
+```
+
+### **Guards & Auth (Already Implemented)**
+```typescript
+import { JwtAuthGuard } from 'src/core/guards/jwt-auth.guard';
+import { JwtUtil } from 'src/core/utils/jwt.util';
+```
+
+### **Base Repository (Already Implemented)**
+```typescript
+import BaseRepository from 'src/common/repositories/baseRepository.repository';
+```
+
+### **API Utilities (Already Implemented)**
+```typescript
+import { getApiPath } from 'src/common/utils/api/api-utils';
+import { ApiPrefixes, ApplicationEndpoints } from 'src/common/constants/apiPathConstants';
+```
+
+### **Constants & Enums (Already Implemented)**
+```typescript
+import { SwaggerTagNames } from 'src/common/constants/enums';
+```
+
+### **DO NOT IMPLEMENT**:
+- ❌ Pagination logic (not needed for Ed-Fi APIs)
+- ❌ Query filtering/sorting (not needed for Ed-Fi APIs)  
+- ❌ Custom decorators mentioned above
+- ❌ Transaction service or transactional decorator
+- ❌ ETag service or ETag decorators
+- ❌ Base repository class
+- ❌ Response type interfaces
+- ❌ Query options interfaces
+- ❌ Custom logger implementation
+- ❌ JWT guards or utilities
+
+**REFERENCE**: Follow the exact import patterns used in `StudentsModule` for consistency.
+
+## Entity Management Process
+
+### **Step 1: Entity Analysis & Creation**
+Before generating any API code:
+
+1. **Check Entity Registry**: Search `.cursor/entities-registry.md` for the main entity definition
+2. **Identify Dependencies**: Find all direct foreign key relationships (1 level only) 
+3. **Entity Existence Check**: Verify if main entity and its direct FK entities exist in codebase
+4. **Create Missing Entities**: 
+   - If main entity missing: Create main entity + all direct FK entities
+   - If main entity exists but missing FK relationships: Create missing FK entities and update main entity
+   - If entity not found in registry: Ask user for entity definition
+5. **Proceed to API Generation**: Only after all required entities are created
+
+### **Entity Creation Rules**
+- Create entities with ALL provided database indexes from registry
+- Include only direct foreign key relationships (don't create FK entities of FK entities)
+- Use proper TypeORM decorators exactly as specified in registry
+- Follow entity structure patterns: some extend Base entity, others use custom primary keys
+- If not extending Base entity, include `createdAt` and `updatedAt` timestamp fields
+
+## Generic Instructions (Apply to All APIs)
+
+### Code Quality & Documentation
+- Add comprehensive TSDoc documentation to all methods (controller, service, repository)
+- Include parameter descriptions, return type descriptions, throws documentation, and examples
+- Follow Single Responsibility Principle (SRP) - create helper functions when methods exceed 20-30 lines
+- Create private helper methods within the same class for entity-specific transformations
+- Create utility functions in separate files for reusable transformations (like DTO transformations)
+- Use descriptive method and variable names
+### Code Structure Standards
+- Use dependency injection and proper decorator usage
+- Implement proper error handling and logging with custom exceptions
+- Follow the repository-service-controller pattern
+- Use TypeORM for database operations
+- Implement proper validation using class-validator decorators in DTOs
+- Use consistent naming conventions (PascalCase for classes, camelCase for methods/properties)
+- Controllers should follow thin controller pattern - only handle HTTP concerns
+- All business logic should be in service layer
+- Repository layer should only contain database interaction logic
+
+### API Configuration Standards
+- **API Prefix**: Use `ApiPrefixes.EDFI` for all APIs
+- **API Endpoints**: Use descriptive endpoint names (e.g., `ApplicationEndpoints.STUDENT`)
+- **API Path**: Generated using `getApiPath({ apiPrefix: ApiPrefixes.EDFI, endpoint: CONTROLLER_ROUTE })`
+- **Identifier**: Use entity-specific primary keys (not always UUID)
+
+### Authentication & Authorization
+- All controllers require `@UseGuards(JwtAuthGuard)` decorator at class level
+- Import `JwtAuthGuard` and `JwtUtil` as providers in every module
+- Include proper API response documentation for authentication/authorization errors
+
+### Logging & Monitoring
+- Add `@LogMethod()` decorator to ALL controller, service, and repository methods
+- Add manual logging statements following the pattern: `this.logger.log('Processing request to create student');`
+- Use CustomLogger with proper context setting in each class constructor
+- Include step-by-step logging in service methods with descriptive messages
+
+### Error Handling
+- Use custom exceptions: `UnknownObjectError`, `BadRequestError`
+- Request body validation handled by ValidationPipe with class-validator decorators in DTOs
+- Business logic validation handled in service layer
+- Include comprehensive error responses using custom response decorators
+
+### Entity Structure
+- Reference `.cursor/entities-registry.md` for all entity definitions and CREATE statements
+- All entities must include ALL provided database indexes exactly as specified in registry
+- Some entities extend Base entity (UUID primary key), others use custom primary keys
+- If not extending Base entity, include `createdAt` and `updatedAt` timestamp fields
+- Follow CREATE statement structure from registry for proper TypeORM entity mapping
+
+### Caching
+- Implement caching for all GET operations using:
+  ```typescript
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey('cache-key-name')
+  @CacheTTL(3600)
+  ```
+
+### Transaction Handling
+- Implement ETag support for concurrency control
+- Use `@IfMatch()` decorator for DELETE operations (required)
+- Use `@IfNoneMatch()` decorator for CREATE operations (optional)
+- Generate ETags using last modified timestamp in DTO constructor
+
+### Module Structure & Organization
+- Create new modules inside the `modules` directory following StudentsModule structure:
+  ```
+  modules/
+    {entityName}/
+      controllers/
+        {entityName}.controller.ts
+      services/
+        {entityName}.service.ts
+      repositories/
+        {entityName}.repository.ts
+      dto/
+        {entityName}.dto.ts
+        request/
+          {entityName}.request.dto.ts
+      utils/
+        {entityName}.util.ts
+      {entityName}.module.ts
+  ```
+- Import newly created modules in app.module.ts (reference app.module.ts structure below)
+- Every module must include `JwtAuthGuard` and `JwtUtil` as providers
+- Use `@Transactional()` decorator and `TransactionService` for CREATE operations
+- Use transaction service for operations that require data consistency
+- Can also be used for UPDATE operations when needed
+
+## API-Specific Instructions
+
+### GET_ALL APIs (Collection Retrieval)
+
+#### Query Parameters (Limited Set)
+- **limit**: Maximum number of items to return (default: 25)
+- **offset**: Number of items to skip (default: 0)
+- **totalCount**: Boolean flag to include total count in response header (default: false)
+
+#### Controller Implementation:
+```typescript
+@Get()
+@ApiOperation({
+    operationId: 'getAll{EntityNamePlural}',
+    summary: 'Retrieves specific resources using the resource\'s property values (using the "Get" pattern).',
+    description: `This GET operation provides access to resources using the "Get" 
+        search pattern. The values of any properties of the resource that are specified 
+        will be used to return all matching results (if it exists).`,
+})
+@ApiQuery({
+    name: 'offset',
+    required: false,
+    type: Number,
+    description: 'Indicates how many items should be skipped before returning results.',
+    example: 0,
+})
+@ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Indicates the maximum number of items that should be returned in the results.',
+    example: 25,
+})
+@ApiQuery({
+    name: 'totalCount',
+    required: false,
+    type: Boolean,
+    description: 'Indicates if the total number of items available should be returned in the \'Total-Count\' header of the response.',
+    example: false,
+})
+@ApiGetAllResponse({EntityName}DTO)
+@HttpGetResponses()
+@LogMethod()
+async getAll{EntityNamePlural}(
+    @Query() queryOptionsFromRequest: QueryOptionFiltersMap,
+    @GenericResponse() httpResponse: GenericResponse,
+): Promise<GetAllResponse<{EntityName}DTO>>
+```
+
+#### Service Implementation:
+```typescript
+/**
+ * {EntityName} Service
+ * 
+ * Contains all business logic for {entityName} operations including validation,
+ * data transformation, and error handling. This service acts as the business
+ * layer between the controller and repository.
+ */
+@Injectable()
+export class {EntityName}Service {
+    private readonly logger: CustomLogger = new CustomLogger();
+
+    constructor(
+        private readonly {entityName}Repository: {EntityName}Repository,
+        private readonly etagService: ETagService,
+        private readonly transactionService: TransactionService,
+    ) {
+        this.logger.setContext('{EntityName}Service');
+    }
+
+    /**
+     * Retrieves a paginated list of {entityNamePlural} based on query options
+     * 
+     * @param queryOptionsFromRequest - Query parameters for filtering and pagination
+     * @param httpResponse - HTTP response object for setting headers
+     * @returns Promise<{EntityName}DTO[]> Array of {entityName} DTOs
+     */
+    @LogMethod()
+    @UseInterceptors(CacheInterceptor)
+    @CacheKey('all-{entityNamePlural}')
+    @CacheTTL(3600)
+    async getAll{EntityNamePlural}(
+        queryOptionsFromRequest: IQueryOptions,
+        httpResponse: GenericResponse,
+    ): Promise<{EntityName}DTO[]> {
+    const cacheKey = `all-{entityNamePlural}:${JSON.stringify(queryOptionsFromRequest)}`;
+    this.logger.log('Starting process to retrieve all {entityNamePlural}', { cacheKey });
+
+    // [Step-1]: Retrieve {entityNamePlural} from repository
+    const [{entityNamePlural}FromDatabase, total{EntityNamePlural}Count]: [{EntityName}[], number] = 
+        await this.{entityName}Repository.findAllBy(queryOptionsFromRequest, {});
+
+    // [Step-2]: Handle empty result set
+    if (!{entityNamePlural}FromDatabase || {entityNamePlural}FromDatabase.length === 0) {
+        this.logger.log('No {entityNamePlural} found matching the criteria');
+        return [];
+    }
+
+    // [Step-3]: Set total count header if requested
+    if (queryOptionsFromRequest.totalCount) {
+        httpResponse.setHeader('Total-Count', total{EntityNamePlural}Count.toString());
+        this.logger.log(`Set Total-Count header: ${total{EntityNamePlural}Count}`);
+    }
+
+    // [Step-4]: Transform entities to DTOs
+    const {entityName}DTOsForResponse: {EntityName}DTO[] = transform{EntityNamePlural}ToDTO({entityNamePlural}FromDatabase);
+
+    this.logger.log(`Successfully retrieved ${${entityName}DTOsForResponse.length} {entityNamePlural}`);
+    return {entityName}DTOsForResponse;
+}
+```
+
+#### Repository Implementation:
+```typescript
+/**
+ * {EntityName} Repository
+ * 
+ * Handles all database operations for {EntityName} entities.
+ * This repository follows the data access layer pattern and only contains
+ * database interaction logic without any business rules or error handling.
+ */
+@Injectable()
+export class {EntityName}Repository extends BaseRepository<{EntityName}> {
+    constructor(
+        @InjectRepository({EntityName})
+        private readonly {entityName}Repository: Repository<{EntityName}>,
+    ) {
+        super({entityName}Repository);
+        this.logger.setContext('{EntityName}Repository');
+    }
+
+    /**
+     * Fetches an array of {EntityName} entities along with the total count, using the
+     * provided IQueryOptions and FindOptionsWhere as filters.
+     * The method will return an array of {EntityName} entities and the total count.
+     *
+     * @param queryOptions - The IQueryOptions object that contains the limit, offset parameters
+     * @param whereConditions - The FindOptionsWhere object that contains the conditions for the where clause
+     * @returns Promise<[{EntityName}[], number]> A tuple containing an array of {EntityName} entities 
+     *                                           and the total count matching the criteria
+     */
+    @LogMethod()
+    async findAllBy(
+        queryOptions: IQueryOptions,
+        whereConditions: FindOptionsWhere<{EntityName}>,
+    ): Promise<[{EntityName}[], number]> {
+    const { limit, offset } = queryOptions;
+
+    this.logger.log('Executing findAndCount query for {entityNamePlural}', {
+        limit,
+        offset,
+        whereConditions
+    });
+
+    // [Step-1]: Execute database query with pagination and filtering
+    const [{entityNamePlural}FromDatabase, totalCountFromDatabase]: [{EntityName}[], number] = 
+        await this.{entityName}Repository.findAndCount({
+            where: whereConditions,
+            relations: {}, // Add relations as needed based on entity structure
+            skip: offset,
+            take: limit,
+            order: {
+                {primaryKeyField}: 'ASC', // Use appropriate primary key field
+            },
+        });
+
+    this.logger.log('Successfully executed findAndCount query', {
+        found{EntityNamePlural}: {entityNamePlural}FromDatabase.length,
+        totalCount: totalCountFromDatabase
+    });
+
+    return [{entityNamePlural}FromDatabase, totalCountFromDatabase];
+}
+```
+
+### GET APIs (Single Entity Retrieval)
+
+#### Controller Implementation:
+```typescript
+/**
+ * Retrieves a specific {entityName} resource by its identifier
+ * 
+ * @param {entityName}IdFromRequest - The {entityName} identifier from URL parameter
+ * @param httpResponse - HTTP response object for setting ETag headers
+ * @returns Promise<{EntityName}DTO> Single {entityName} DTO
+ */
+@Get(':id')
+@ApiOperation({
+    operationId: 'get{EntityName}ById',
+    summary: 'Retrieves a specific resource using the resource\'s identifier (using the "Get By Id" pattern).',
+    description: 'This GET operation retrieves a resource by the specified resource identifier.',
+})
+@ApiParam({
+    name: 'id',
+    type: 'string',
+    description: 'A resource identifier that uniquely identifies the resource.',
+    example: '100001',
+})
+@ApiGetSingleResponse({EntityName}DTO)
+@HttpGetResponses()
+@LogMethod()
+async get{EntityName}ById(
+    @Param('id') {entityName}IdFromRequest: string,
+    @GenericResponse() httpResponse: GenericResponse,
+): Promise<GetSingleResponse<{EntityName}DTO>>
+```
+
+#### Service Implementation:
+```typescript
+/**
+ * Retrieves a specific {entityName} by their identifier
+ * 
+ * @param {entityName}IdFromRequest - {EntityName} identifier as string from request
+ * @param httpResponse - HTTP response object for setting ETag headers
+ * @returns Promise<{EntityName}DTO> Single {entityName} DTO
+ * @throws BadRequestError if {entityName} ID is invalid
+ * @throws UnknownObjectError if {entityName} is not found
+ */
+@LogMethod()
+@UseInterceptors(CacheInterceptor)
+@CacheKey('{entityName}-by-id')
+@CacheTTL(3600)
+async get{EntityName}ById(
+    {entityName}IdFromRequest: string,
+    httpResponse: GenericResponse,
+): Promise<{EntityName}DTO> {
+    this.logger.log('Starting process to retrieve {entityName} by ID', { {entityName}Id: {entityName}IdFromRequest });
+
+    // [Step-1]: Convert and validate {entityName} ID (if needed)
+    const validated{EntityName}Id = this.convertAndValidateId({entityName}IdFromRequest);
+
+    // [Step-2]: Retrieve {entityName} from repository
+    const {entityName}FromDatabase: {EntityName} | null = await this.{entityName}Repository.findById(validated{EntityName}Id);
+
+    // [Step-3]: Handle {entityName} not found
+    if (!{entityName}FromDatabase) {
+        this.logger.warn(`{EntityName} with ID ${validated{EntityName}Id} not found`);
+        throw new UnknownObjectError(`{EntityName} with ID ${${entityName}IdFromRequest} not found`);
+    }
+
+    // [Step-4]: Transform to DTO and set ETag header
+    const {entityName}DTOForResponse: {EntityName}DTO = new {EntityName}DTO({entityName}FromDatabase);
+    httpResponse.setHeader('ETag', {entityName}DTOForResponse._etag);
+
+    this.logger.log(`Successfully retrieved {entityName} with ID ${validated{EntityName}Id}`);
+    return {entityName}DTOForResponse;
+}
+```
+
+### POST APIs (Entity Creation/Update - Upsert)
+
+#### Controller Implementation:
+```typescript
+/**
+ * Creates or updates a {entityName} resource (upsert operation)
+ * 
+ * @param create{EntityName}Request - {EntityName} data from request body
+ * @param ifNoneMatchHeader - Optional ETag header for preventing duplicates
+ * @param httpResponse - HTTP response object
+ * @returns Promise<CreateResponse> No content response for successful creation
+ */
+@Post()
+@HttpCode(HttpStatus.CREATED)
+@ApiOperation({
+    operationId: 'create{EntityName}',
+    summary: 'Creates or updates resources based on the natural key values of the supplied resource.',
+    description: `The POST operation can be used to create or update resources. In database terms, this is often referred to as an "upsert" operation (insert + update). Clients should NOT include the resource "id" in the JSON body because it will result in an error. The web service will identify whether the resource already exists based on the natural key values provided, and update or create the resource appropriately.`,
+})
+@ApiHeader({
+    name: 'If-None-Match',
+    description: 'The previously returned ETag header value, used here to prevent the creation of duplicate resources.',
+    required: false,
+    example: '"2025-05-29T07:53:44.000Z"',
+})
+@ApiBody({
+    type: Create{EntityName}DTO,
+    description: 'The JSON representation of the "{entityName}" resource to be created or updated.',
+})
+@ApiCreateResponse()
+@HttpPostResponses()
+@LogMethod()
+async create{EntityName}(
+    @Body() create{EntityName}Request: Create{EntityName}DTO,
+    @IfNoneMatch() ifNoneMatchHeader: string,
+): Promise<CreateResponse> {
+    this.logger.log('Processing request to create {entityName}');
+
+    // [Step-1]: Delegate all validation and business logic to service layer
+    await this.{entityName}Service.create{EntityName}(
+        create{EntityName}Request,
+        ifNoneMatchHeader
+    );
+
+    this.logger.log('Successfully processed request to create {entityName}');
+}
+```
+
+#### Service Implementation:
+```typescript
+/**
+ * Creates or updates a {entityName} resource (upsert operation)
+ * 
+ * @param create{EntityName}Request - Validated {entityName} data from request (already validated by Create{EntityName}DTO)
+ * @param ifNoneMatchHeader - Optional ETag header for preventing duplicates
+ * @returns Promise<void> No return value for successful creation/update
+ * @throws BadRequestError for validation errors
+ * @throws ConflictError for ETag mismatches or duplicate key violations
+ */
+@LogMethod()
+@Transactional()
+async create{EntityName}(
+    create{EntityName}Request: Create{EntityName}DTO,
+    ifNoneMatchHeader: string,
+): Promise<void> {
+    return this.transactionService.executeInTransaction(async (queryRunner) => {
+        this.logger.log('Starting process to create/update {entityName}');
+
+        // [Step-1]: Check for existing {entityName} (for upsert behavior)
+        const existing{EntityName}FromDatabase: {EntityName} | null = 
+            await this.{entityName}Repository.findByUniqueField(create{EntityName}Request.uniqueField);
+
+        // [Step-2]: Validate ETag if provided and {entityName} exists
+        if (ifNoneMatchHeader && existing{EntityName}FromDatabase) {
+            const existing{EntityName}DTO: {EntityName}DTO = new {EntityName}DTO(existing{EntityName}FromDatabase);
+            this.etagService.validateIfNoneMatch(ifNoneMatchHeader, existing{EntityName}DTO._etag);
+        }
+
+        // [Step-3]: Create {entityName} entity from validated request
+        const {entityName}EntityToSave: {EntityName} = this.create{EntityName}EntityFromRequest(create{EntityName}Request);
+
+        // Use transaction repository
+        const repository = this.transactionService.getRepository({EntityName}, queryRunner);
+
+        if (existing{EntityName}FromDatabase) {
+            // [Step-4a]: Update existing {entityName} (upsert behavior)
+            this.logger.log('{EntityName} exists, performing update operation');
+            await repository.save({
+                ...existing{EntityName}FromDatabase,
+                ...{entityName}EntityToSave
+            });
+        } else {
+            // [Step-4b]: Create new {entityName}
+            this.logger.log('{EntityName} does not exist, performing create operation');
+            await repository.save({entityName}EntityToSave);
+        }
+
+        this.logger.log(`Successfully processed {entityName} with unique field ${create{EntityName}Request.uniqueField}`);
+    });
+}
+```
+
+### DELETE APIs (Entity Deletion)
+
+#### Controller Implementation:
+```typescript
+/**
+ * Deletes a {entityName} resource by its identifier
+ * 
+ * @param {entityName}IdFromRequest - The {entityName} identifier from URL parameter
+ * @param ifMatchHeader - Required ETag header for concurrency control
+ * @returns Promise<DeleteResponse> No content response for successful deletion
+ */
+@Delete(':id')
+@HttpCode(HttpStatus.NO_CONTENT)
+@ApiOperation({
+    operationId: 'delete{EntityName}ById',
+    summary: 'Deletes an existing resource using the resource identifier.',
+    description: 'The DELETE operation is used to delete an existing resource by identifier. If the resource doesn\'t exist, an error may result to indicate this condition.',
+})
+@ApiParam({
+    name: 'id',
+    type: 'string',
+    description: 'A resource identifier that uniquely identifies the resource.',
+    example: '100001',
+})
+@ApiHeader({
+    name: 'If-Match',
+    description: 'The ETag header value used to prevent the deletion of a resource modified by another party.',
+    required: true,
+    example: '"2025-05-29T07:53:44.000Z"',
+})
+@ApiDeleteResponse()
+@HttpDeleteResponses()
+@LogMethod()
+async delete{EntityName}ById(
+    @Param('id') {entityName}IdFromRequest: string,
+    @IfMatch() ifMatchHeader: string,
+): Promise<DeleteResponse>
+```
+
+#### Service Implementation:
+```typescript
+/**
+ * Deletes a {entityName} by their identifier
+ * 
+ * @param {entityName}IdFromRequest - {EntityName} identifier as string from request
+ * @param ifMatchHeader - Required ETag header for concurrency control
+ * @returns Promise<void> No return value for successful deletion
+ * @throws BadRequestError if {entityName} ID is invalid or ETag is missing
+ * @throws UnknownObjectError if {entityName} is not found
+ */
+@LogMethod()
+async delete{EntityName}(
+    {entityName}IdFromRequest: string,
+    ifMatchHeader: string,
+): Promise<void> {
+    this.logger.log('Starting process to delete {entityName}');
+
+    // [Step-1]: Validate ETag header presence
+    if (!ifMatchHeader?.trim()) {
+        throw new BadRequestError('If-Match header is required for delete operations');
+    }
+
+    // [Step-2]: Convert and validate {entityName} ID
+    const validated{EntityName}Id = this.convertAndValidateId({entityName}IdFromRequest);
+
+    // [Step-3]: Retrieve existing {entityName} for validation
+    const existing{EntityName}FromDatabase: {EntityName} | null = 
+        await this.{entityName}Repository.findById(validated{EntityName}Id);
+
+    // [Step-4]: Handle {entityName} not found
+    if (!existing{EntityName}FromDatabase) {
+        this.logger.warn(`{EntityName} with ID ${validated{EntityName}Id} not found for deletion`);
+        throw new UnknownObjectError(`{EntityName} with ID ${${entityName}IdFromRequest} not found`);
+    }
+
+    // [Step-5]: Validate ETag for concurrency control
+    const existing{EntityName}DTO: {EntityName}DTO = new {EntityName}DTO(existing{EntityName}FromDatabase);
+    this.etagService.validateIfMatch(ifMatchHeader, existing{EntityName}DTO._etag);
+
+    // [Step-6]: Perform deletion
+    const deletionSuccessful: boolean = await this.{entityName}Repository.delete{EntityName}(validated{EntityName}Id);
+
+    // [Step-7]: Handle deletion failure
+    if (!deletionSuccessful) {
+        this.logger.error(`Failed to delete {entityName} with ID ${validated{EntityName}Id}`);
+        throw new UnknownObjectError(`Failed to delete {entityName} with ID ${${entityName}IdFromRequest}`);
+    }
+
+    this.logger.log(`Successfully deleted {entityName} with ID ${validated{EntityName}Id}`);
+}
+```
+
+## RESPONSE DECORATORS & TYPES
+
+### API Response Decorators
+- `@ApiGetAllResponse({EntityName}DTO)` - For GET_ALL operations returning array of entities
+- `@ApiGetSingleResponse({EntityName}DTO)` - For GET operations returning single entity
+- `@ApiCreateResponse()` - For POST operations returning 201 status with no body
+- `@ApiDeleteResponse()` - For DELETE operations returning 204 status with no body
+- `@HttpGetResponses()` - Standard HTTP responses for GET operations
+- `@HttpPostResponses()` - Standard HTTP responses for POST operations
+- `@HttpDeleteResponses()` - Standard HTTP responses for DELETE operations
+
+### Response Types
+- `GetAllResponse<{EntityName}DTO>` - For GET_ALL controller methods
+- `GetSingleResponse<{EntityName}DTO>` - For GET controller methods
+- `CreateResponse` - For POST controller methods (no body, just status)
+- `DeleteResponse` - For DELETE controller methods (no body, just status)
+
+## VALIDATION PATTERNS
+
+### Request DTO Validation
+All request DTOs should include comprehensive validation using class-validator decorators:
+
+#### Required Field Validation
+```typescript
+@ApiProperty({ description: 'Field description', example: 'Example' })
+@IsNotEmpty({ message: 'Field is required' })
+@IsString({ message: 'Field must be a string' })
+@MinLength(2, { message: 'Field must be at least 2 characters long' })
+@MaxLength(75, { message: 'Field cannot exceed 75 characters' })
+@Transform(({ value }: TransformFnParams) => value?.trim())
+@Matches(/^[A-Za-z\s\-']+$/, { message: 'Field contains invalid characters' })
+fieldName: string;
+```
+
+#### Optional Field Validation
+```typescript
+@ApiPropertyOptional({ description: 'Optional field', example: 'Optional' })
+@IsOptional()
+@IsString({ message: 'Field must be a string' })
+@MaxLength(30, { message: 'Field cannot exceed 30 characters' })
+@Transform(({ value }: TransformFnParams) => value?.trim())
+optionalField?: string;
+```
+
+#### Date Field Validation
+```typescript
+@ApiProperty({ description: 'Date field', example: '2010-05-15' })
+@IsNotEmpty({ message: 'Date is required' })
+@IsISO8601({ strict: true }, { message: 'Date must be a valid ISO 8601 date' })
+@Transform(({ value }: TransformFnParams) => {
+    const date = new Date(value);
+    const now = new Date();
+    if (date > now) {
+        throw new Error('Date cannot be in the future');
+    }
+    return value;
+})
+dateField: string;
+```
+
+#### Number Field Validation
+```typescript
+@ApiProperty({ description: 'Number field', example: 123 })
+@IsNotEmpty({ message: 'Number field is required' })
+@IsNumber({}, { message: 'Field must be a number' })
+@IsPositive({ message: 'Field must be a positive number' })
+numberField: number;
+```
+
+#### Conditional Validation
+```typescript
+@ApiPropertyOptional({ description: 'Conditional field' })
+@IsOptional()
+@IsISO8601({ strict: true }, { message: 'Field must be a valid date' })
+@ValidateIf((o) => o.someConditionField && o.someConditionField !== 'defaultValue')
+@Transform(({ value, obj }: TransformFnParams) => {
+    if (!value) return value;
+    // Custom validation logic
+    return value;
+})
+conditionalField?: string;
+```
+
+### Validation Decorators Reference
+- `@IsNotEmpty()` - Field cannot be empty (for required fields)
+- `@IsOptional()` - Field is optional
+- `@IsString()`, `@IsNumber()`, `@IsBoolean()` - Type validation
+- `@IsISO8601({ strict: true })` - Date format validation
+- `@MinLength()`, `@MaxLength()` - String length validation
+- `@IsPositive()`, `@Min()` - Number validation
+- `@Matches()` - Regular expression validation
+- `@Transform()` - Data transformation and custom validation
+- `@ValidateIf()` - Conditional validation
+- Always include custom error messages for better API documentation
+
+## DTO PATTERNS
+```typescript
+export class {EntityName}DTO {
+    @ApiProperty({ description: 'Primary identifier', example: 123456 })
+    {primaryKeyField}: {PrimaryKeyType};
+
+    @ApiProperty({ description: 'Field description', example: 'Example value' })
+    fieldName: string;
+
+    @ApiProperty({ description: 'Optional field', example: 'Optional value', required: false })
+    optionalField?: string;
+
+    // ETag and timestamp fields (standard for all Ed-Fi DTOs)
+    @ApiProperty({ description: 'ETag for concurrency control', example: '"2025-05-29T07:53:44.000Z"' })
+    _etag: string;
+
+    @ApiProperty({ description: 'Last modified date', example: '2025-05-29T07:53:44.000Z' })
+    _lastModifiedDate: string;
+
+    constructor({entityName}: {EntityName}) {
+        this.{primaryKeyField} = {entityName}.{primaryKeyField};
+        this.fieldName = {entityName}.fieldName;
+        this.optionalField = {entityName}.optionalField;
+        
+        // Generate Ed-Fi ETag and lastModifiedDate
+        const lastModified = {entityName}.updatedAt || {entityName}.createdAt;
+        this._etag = `"${lastModified.toISOString()}"`;
+        this._lastModifiedDate = lastModified.toISOString();
+    }
+}
+```
+
+### Request DTO (Create/Update)
+```typescript
+export class Create{EntityName}DTO {
+    @ApiProperty({ description: 'Primary identifier', example: 123456 })
+    @IsNotEmpty({ message: 'Primary identifier is required' })
+    @IsNumber({}, { message: 'Primary identifier must be a number' })
+    @IsPositive({ message: 'Primary identifier must be a positive number' })
+    {primaryKeyField}: {PrimaryKeyType};
+    
+    @ApiProperty({ description: 'Required field', example: 'Value', maxLength: 75 })
+    @IsNotEmpty({ message: 'Field is required' })
+    @IsString({ message: 'Field must be a string' })
+    @MinLength(2, { message: 'Field must be at least 2 characters long' })
+    @MaxLength(75, { message: 'Field cannot exceed 75 characters' })
+    @Transform(({ value }: TransformFnParams) => value?.trim())
+    @Matches(/^[A-Za-z\s\-']+$/, { message: 'Field can only contain letters, spaces, hyphens, and apostrophes' })
+    fieldName: string;
+
+    @ApiPropertyOptional({ description: 'Optional field', example: 'Optional', maxLength: 30 })
+    @IsOptional()
+    @IsString({ message: 'Optional field must be a string' })
+    @MaxLength(30, { message: 'Optional field cannot exceed 30 characters' })
+    @Transform(({ value }: TransformFnParams) => value?.trim())
+    optionalField?: string;
+
+    @ApiProperty({ description: 'Date field', example: '2010-05-15' })
+    @IsNotEmpty({ message: 'Date field is required' })
+    @IsISO8601({ strict: true }, { message: 'Date field must be a valid ISO 8601 date' })
+    @Transform(({ value }: TransformFnParams) => {
+        const date = new Date(value);
+        const now = new Date();
+        if (date > now) {
+            throw new Error('Date field cannot be in the future');
+        }
+        return value;
+    })
+    dateField: string;
+
+    // Include comprehensive validation decorators:
+    // - @IsNotEmpty, @IsOptional for required/optional fields
+    // - @IsString, @IsNumber, @IsBoolean, @IsISO8601 for type validation
+    // - @MinLength, @MaxLength for string length validation
+    // - @IsPositive, @Min for number validation
+    // - @Matches for pattern validation
+    // - @Transform for data transformation and custom validation
+    // - @ValidateIf for conditional validation
+    // - Custom error messages for all validation rules
+}
+```
+
+## UTILITY FUNCTIONS
+
+### Entity Transformation Utility
+```typescript
+export function transform{EntityNamePlural}ToDTO({entityNamePlural}FromDatabase: {EntityName}[]): {EntityName}DTO[] {
+    return {entityNamePlural}FromDatabase.map(({entityName}Entity: {EntityName}) => new {EntityName}DTO({entityName}Entity));
+}
+```
+
+## ENTITY PATTERNS
+
+### Entity Definition
+```typescript
+@Entity('{table_name}')
+export class {EntityName} {
+    @PrimaryColumn({ name: '{primary_key_column}', type: '{column_type}' })
+    {primaryKeyField}: {PrimaryKeyType};
+
+    @Column({ name: '{column_name}', type: '{column_type}', length: {length}, nullable: {nullable} })
+    fieldName: string;
+
+    // If not extending Base entity, include timestamp fields
+    @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
+
+    @Column({ name: 'updated_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
+}
+```
+
+### When to Extend Base Entity
+- Extend Base entity when using UUID primary keys and standard timestamp/soft delete fields
+- Use custom entity structure when using domain-specific primary keys (like Ed-Fi USI fields)
+- If not extending Base entity, always include `createdAt` and `updatedAt` fields
+
+## REPOSITORY PATTERNS
+
+### Standard Repository Methods
+```typescript
+/**
+ * {EntityName} Repository
+ * 
+ * Handles all database operations for {EntityName} entities.
+ * This repository follows the data access layer pattern and only contains
+ * database interaction logic without any business rules or error handling.
+ */
+@Injectable()
+export class {EntityName}Repository extends BaseRepository<{EntityName}> {
+    constructor(
+        @InjectRepository({EntityName})
+        private readonly {entityName}Repository: Repository<{EntityName}>,
+    ) {
+        super({entityName}Repository);
+        this.logger.setContext('{EntityName}Repository');
+    }
+
+    // All repository methods should include comprehensive TSDoc
+    // Include entity-specific finder methods (findByUniqueField, etc.)
+    // Add @LogMethod() decorator to all methods
+}
+```
+
+### Module Creation Pattern
+```typescript
+/**
+ * {EntityName} Module
+ * 
+ * Module for {entityName} related functionality including controller, service, and repository.
+ * Imports necessary dependencies and provides authentication guards.
+ */
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([{EntityName}]),
+  ],
+  controllers: [{EntityName}Controller],
+  providers: [
+    {EntityName}Service,
+    {EntityName}Repository,
+    JwtAuthGuard,
+    JwtUtil,
+  ],
+  exports: [{EntityName}Service, {EntityName}Repository],
+})
+export class {EntityName}Module {}
+```
+
+### App Module Reference Structure
+```typescript
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot({
+      ...databaseConfig,
+    }),
+    TransactionModule,
+    ETagModule,
+    StudentsModule,
+    // Add new modules here following the same pattern
+    {EntityName}Module,
+  ],
+  controllers: [AppController],
+  providers: [AppService, CustomLogger],
+})
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggerMiddleware).forRoutes('*');
+  }
+}
+```
+
+When generating APIs, you will receive:
+
+### Required Information:
+1. **Entity Name**: The name of the entity (e.g., "Student", "School")
+2. **API Endpoints**: The endpoint paths to be used (e.g., "students", "schools")
+3. **Entity Structure**: Complete field definitions with types, constraints, and relationships
+4. **Primary Key Information**: Which field serves as the primary key and its type
+5. **Base Entity Usage**: Whether the entity should extend Base entity or use custom structure
+6. **API Types**: Which API operations to generate (GET, GET_ALL, POST, DELETE)
+
+### Optional Information (Request if not provided):
+7. **Field Validation Rules**: Specific validation requirements for request DTOs
+8. **Database Table Name**: Actual database table name if different from entity name
+9. **Unique Constraints**: Fields that should have unique constraints for upsert logic
+10. **Caching Requirements**: Any specific caching configurations
+11. **Transaction Requirements**: Whether complex transaction handling is needed
+12. **Relationships**: Related entities and their relationship types
+13. **Custom Business Logic**: Any entity-specific validation or processing rules
+14. **Index Requirements**: Database indexes needed for performance
+
+### Response Structure Information:
+15. **Response DTO Structure**: Expected response format and field mappings
+16. **Error Handling**: Specific error cases and messages
+17. **ETag Requirements**: Whether ETag support is needed (default: yes for Ed-Fi)
+
+### Default Configurations (Applied if not specified):
+- Default pagination: limit=25, offset=0
+- Default caching: 3600 seconds TTL
+- Default ordering: Primary key ASC
+- Default ETag: Based on updatedAt/createdAt timestamp
+- Default transaction: Used for POST operations
+
+## IMPORTANT NOTES
+
+### Service Layer Validation
+While request body validation is handled by ValidationPipe, service layer handles:
+- Entity existence validation
+- Business rule validation
+- Referential integrity checks
+- ETag validation for concurrency control
+- Custom business logic validation
+
+```typescript
+// Example service validation
+/**
+ * Validates if entity exists in the database
+ * @param id - Entity identifier to validate
+ * @returns Promise<Entity> The found entity
+ * @throws UnknownObjectError if entity is not found
+ */
+private async validateEntityExists(id: string): Promise<Entity> {
+    const entity = await this.repository.findById(id);
+    if (!entity) {
+        throw new UnknownObjectError(`Entity with ID ${id} not found`);
+    }
+    return entity;
+}
+```
+
+## INFORMATION PROCESSING
+While request body validation is handled by ValidationPipe, service layer handles:
+- Entity existence validation
+- Business rule validation
+- Referential integrity checks
+- ETag validation for concurrency control
+- Custom business logic validation
+
+```typescript
+// Example service validation
+private async validateEntityExists(id: string): Promise<Entity> {
+    const entity = await this.repository.findById(id);
+    if (!entity) {
+        throw new UnknownObjectError(`Entity with ID ${id} not found`);
+    }
+    return entity;
+}
+```
+- ETag handling is mandatory for concurrency control in CREATE and DELETE operations
+- All APIs follow Ed-Fi specification patterns with upsert behavior for POST operations
+- All GET operations include caching with standard configuration
+- Repository methods should be focused on database operations only
+- Service methods contain all business logic and validation
+- Controllers should be thin and only handle HTTP concerns
+- Error handling uses custom exception classes with appropriate HTTP status codes
+- Logging is comprehensive with step-by-step operation tracking
+- Transaction handling is used for data consistency in CREATE operations
+
+## QUESTIONS TO ASK
+
+If any required information is missing, ask the user:
+1. "What is the main entity name for API generation?"
+2. "Which API operations should be generated (GET, GET_ALL, POST, DELETE)?"
+3. "What is the API endpoint path?" (if different from entity name)
+4. If entity not found in registry: "Could you provide the CREATE statement for [EntityName]?"
+5. "Are there any specific business rules or validation requirements?"
+
+**Note**: Entity structure, relationships, and database schema are automatically retrieved from `.cursor/entities-registry.md`

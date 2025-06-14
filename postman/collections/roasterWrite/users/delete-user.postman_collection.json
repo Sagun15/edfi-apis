@@ -1,0 +1,249 @@
+{
+  "info": {
+    "_postman_id": "cd8adb1c-5513-44a4-ba2d-e8ab2b0b4b43",
+    "name": "delete-user",
+    "description": "Test suite for User DELETE API focusing on happy paths and negative cases",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31022060"
+  },
+  "item": [
+    {
+      "name": "Happy Path Tests",
+      "item": [
+        {
+          "name": "Delete user with valid user sourcedId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  "",
+                  "// Verify no response body for 204",
+                  "pm.test(\"No response body\", function() {",
+                  "    pm.response.to.not.have.body();",
+                  "});",
+                  "",
+                  "// Performance test",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{validSourcedId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{validSourcedId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative Tests",
+      "item": [
+        {
+          "name": "Invalid UUID Format",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response structure is correct\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+                  "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description');",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/invalid-uuid-format",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "invalid-uuid-format"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User does not exist or may have deleted",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response structure is correct\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+                  "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description');",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{nonExistentSourcedId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{nonExistentSourcedId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unauthorized Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response structure is correct\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+                  "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description');",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{validSourcedId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": ["users", "{{validSourcedId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "x-app-key",
+      "value": "<app-key>",
+      "type": "string"
+    },
+    {
+      "key": "x-client-id",
+      "value": "<client-id>",
+      "type": "string"
+    },
+    {
+      "key": "bearerToken",
+      "value": "<token>",
+      "type": "string"
+    },
+    {
+      "key": "baseUrl",
+      "value": "<url>",
+      "type": "string"
+    },
+    {
+      "key": "validSourcedId",
+      "value": "<valid-sourced-id>",
+      "type": "string"
+    },
+    {
+      "key": "nonExistentSourcedId",
+      "value": "<non-existent-sourced-id>",
+      "type": "string"
+    }
+  ]
+}

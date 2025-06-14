@@ -1,0 +1,1061 @@
+{
+	"info": {
+		"_postman_id": "07069b2c-fff0-4618-845c-5369be74d580",
+		"name": "create-class",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36990357"
+	},
+	"item": [
+		{
+			"name": "Happy Path Tests",
+			"item": [
+				{
+					"name": "Creating with all valid fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has correct imsx_codeMajor value\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.imsx_codeMajor).to.eql(\"created\");",
+									"});",
+									"",
+									"pm.test(\"Supplied sourcedId matches request value\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.sourcedIdPairs.suppliedSourcedId).to.eql(JSON.parse(pm.request.body.raw).sourcedId);",
+									"});",
+									"",
+									"pm.test(\"Allocated sourcedId is a valid UUID\", function () {",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.sourcedIdPairs.allocatedSourcedId).to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourcedId\": \"2fa85f64-5727-4562-b3fc-2c963b16afa6\",\n    \"title\": \"Advanced Mathematics\",\n    \"status\": \"active\",\n    \"classCode\": \"MATH-201\",\n    \"classType\": \"SCHEDULED\",\n    \"location\": \"Room 305\",\n    \"grades\": [\n        \"BB\",\n        \"AA\"\n    ],\n    \"subjects\": [\n        \"Mathematics\", \"Algebra\"\n    ],\n    \"subjectCodes\":[\n        \"ABC\",\"BCD\"\n    ],\n    \"course\": {\n        \"href\": \"/v1/courses/d07be0a4-bfb1-41b6-b91b-52f757be3549\",\n        \"sourcedId\": \"d07be0a4-bfb1-41b6-b91b-52f757be3549\",\n        \"type\": \"course\"\n    },\n    \"school\": {\n        \"href\": \"/v1/organizations/91edfc73-d1ab-4168-93de-85a71d7f318d\",\n        \"sourcedId\": \"91edfc73-d1ab-4168-93de-85a71d7f318d\",\n        \"type\": \"org\"\n    },\n    \"terms\": [{\n        \"href\": \"/v1/academicSessions/4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"sourcedId\": \"4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"type\": \"academicSession\"\n    }],\n    \"periods\": [\n        \"p1\",\n        \"p2\"\n    ],\n    \"metadata\": {\n        \"extensions\": {\n            \"fields\": {}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Creating with minimum required fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"validation test\", function () {",
+									"    pm.response.to.have.status(201);",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.imsx_codeMajor).to.eql(\"created\");",
+									"    pm.expect(res.sourcedIdPairs.suppliedSourcedId).to.eql(JSON.parse(pm.request.body.raw).sourcedId);",
+									"    pm.expect(res.sourcedIdPairs.allocatedSourcedId).to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourcedId\": \"2fa85f64-5727-4562-b3fc-2c963b16af16\",\n    \"title\": \"Advanced Mathematics\",\n    \"status\": \"active\",\n    \"classType\": \"SCHEDULED\",\n    \"course\": {\n        \"href\": \"/v1/courses/d07be0a4-bfb1-41b6-b91b-52f757be3549\",\n        \"sourcedId\": \"d07be0a4-bfb1-41b6-b91b-52f757be3549\",\n        \"type\": \"course\"\n    },\n    \"school\": {\n        \"href\": \"/v1/organizations/91edfc73-d1ab-4168-93de-85a71d7f318d\",\n        \"sourcedId\": \"91edfc73-d1ab-4168-93de-85a71d7f318d\",\n        \"type\": \"org\"\n    },\n    \"terms\": [{\n        \"href\": \"/v1/academicSessions/4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"sourcedId\": \"4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"type\": \"academicSession\"\n    }]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Tests",
+			"item": [
+				{
+					"name": "Invalid UUID format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(400);",
+									"    const res = pm.response.json();",
+									"    res.imsx_description = \"sourcedId must be a valid UUID.\";",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourcedId\": \"invalid-uuid\",\n    \"title\": \"Advanced Mathematics\",\n    \"status\": \"active\",\n    \"classCode\": \"MATH-201\",\n    \"classType\": \"SCHEDULED\",\n    \"location\": \"Room 305\",\n    \"grades\": [\n        \"9\",\n        \"10\"\n    ],\n    \"subjects\": [\n        \"Mathematics\", \"Algebra\"\n    ],\n    \"course\": {\n        \"href\": \"/v1/courses/f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"sourcedId\": \"f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"type\": \"course\"\n    },\n    \"school\": {\n        \"href\": \"/v1/organizations/31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"sourcedId\": \"31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"type\": \"org\"\n    },\n    \"terms\": {\n        \"href\": \"/v1/academicSessions/4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"sourcedId\": \"4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"type\": \"academicSession\"\n    },\n    \"periods\": [\n        \"p1\",\n        \"p2\"\n    ],\n    \"metadata\": {\n        \"extensions\": {\n            \"fields\": {}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Missing required fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"classCode\": \"MATH-201\",\n    \"location\": \"Room 305\",\n    \"grades\": [\n        \"9\",\n        \"10\"\n    ],\n    \"subjects\": [\n        \"Mathematics\", \"Algebra\"\n    ],\n    \"periods\": [\n        \"p1\",\n        \"p2\"\n    ],\n    \"metadata\": {\n        \"extensions\": {\n            \"fields\": {}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Strings in Required Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourcedId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa9\",\n    \"title\": \"\",\n    \"status\": \"active\",\n    \"classCode\": \"MATH-201\",\n    \"classType\": \"SCHEDULED\",\n    \"location\": \"Room 305\",\n    \"grades\": [\n        \"9\",\n        \"10\"\n    ],\n    \"subjects\": [\n        \"Mathematics\", \"Algebra\"\n    ],\n    \"course\": {\n        \"href\": \"/v1/courses/f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"sourcedId\": \"f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"type\": \"course\"\n    },\n    \"school\": {\n        \"href\": \"/v1/organizations/31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"sourcedId\": \"31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"type\": \"org\"\n    },\n    \"terms\": [{\n        \"href\": \"/v1/academicSessions/4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"sourcedId\": \"4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"type\": \"academicSession\"\n    }],\n    \"periods\": [\n        \"p1\",\n        \"p2\"\n    ],\n    \"metadata\": {\n        \"extensions\": {\n            \"fields\": {}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid terms",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourcedId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\n    \"title\": \"Advanced Mathematics\",\n    \"status\": \"active\",\n    \"classCode\": \"MATH-201\",\n    \"classType\": \"SCHEDULED\",\n    \"location\": \"Room 305\",\n    \"grades\": [\n        \"9\",\n        \"10\"\n    ],\n    \"course\": {\n        \"href\": \"/v1/courses/f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"sourcedId\": \"f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"type\": \"course\"\n    },\n    \"school\": {\n        \"href\": \"/v1/organizations/31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"sourcedId\": \"31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"type\": \"org\"\n    },\n    \"terms\": [{\n        \"href\": \"/v1/academicSessions/4ffaf5e6-e1ba-4505-9c1e-d401f6c0d11b\",\n        \"sourcedId\": \"4ffaf5e6-e1ba-4505-9c1e-d401f6c0d11b\",\n        \"type\": \"academicSession\"\n    }],\n    \"periods\": [\n        \"p1\",\n        \"p2\"\n    ],\n    \"metadata\": {\n        \"extensions\": {\n            \"fields\": {}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid course",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourcedId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\n    \"title\": \"Advanced Mathematics\",\n    \"status\": \"active\",\n    \"classCode\": \"MATH-201\",\n    \"classType\": \"SCHEDULED\",\n    \"location\": \"Room 305\",\n    \"grades\": [\n        \"9\",\n        \"10\"\n    ],\n    \"course\": {\n        \"href\": \"/v1/courses/f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"sourcedId\": \"f474ea58-58c4-495d-ae02-6998914a8a45\",\n        \"type\": \"course\"\n    },\n    \"school\": {\n        \"href\": \"/v1/organizations/31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"sourcedId\": \"31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"type\": \"org\"\n    },\n    \"terms\":[ {\n        \"href\": \"/v1/academicSessions/4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"sourcedId\": \"4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"type\": \"academicSession\"\n    }],\n    \"periods\": [\n        \"p1\",\n        \"p2\"\n    ],\n    \"metadata\": {\n        \"extensions\": {\n            \"fields\": {}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid school",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourcedId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa1\",\n    \"title\": \"Advanced Mathematics\",\n    \"status\": \"active\",\n    \"classCode\": \"MATH-201\",\n    \"classType\": \"SCHEDULED\",\n    \"location\": \"Room 305\",\n    \"grades\": [\n        \"9\",\n        \"10\"\n    ],\n    \"course\": {\n        \"href\": \"/v1/courses/f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"sourcedId\": \"f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"type\": \"course\"\n    },\n    \"school\": {\n        \"href\": \"/v1/organizations/31e22de0-b4f1-499c-ab04-60a500c5c0c1\",\n        \"sourcedId\": \"31e22de0-b4f1-499c-ab04-60a500c5c0c1\",\n        \"type\": \"org\"\n    },\n    \"terms\": [{\n        \"href\": \"/v1/academicSessions/4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"sourcedId\": \"4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"type\": \"academicSession\"\n    }],\n    \"periods\": [\n        \"p1\",\n        \"p2\"\n    ],\n    \"metadata\": {\n        \"extensions\": {\n            \"fields\": {}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Length mismatch b/w Subjects and subjectCodes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourcedId\": \"3fa85f64-5717-4562-b3fa-2c963f66afa6\",\n    \"title\": \"Advanced Mathematics\",\n    \"status\": \"active\",\n    \"classCode\": \"MATH-201\",\n    \"classType\": \"SCHEDULED\",\n    \"location\": \"Room 305\",\n    \"grades\": [\n        \"9\",\n        \"10\"\n    ],\n    \"subjects\": [\n        \"Mathematics\", \"Algebra\"\n    ],\n    \"subjectCodes\":[\n        \"HCB-01\"\n    ],\n    \"course\": {\n        \"href\": \"/v1/courses/f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"sourcedId\": \"f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"type\": \"course\"\n    },\n    \"school\": {\n        \"href\": \"/v1/organizations/31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"sourcedId\": \"31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"type\": \"org\"\n    },\n    \"terms\": [{\n        \"href\": \"/v1/academicSessions/4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"sourcedId\": \"4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"type\": \"academicSession\"\n    }],\n    \"periods\": [\n        \"p1\",\n        \"p2\"\n    ],\n    \"metadata\": {\n        \"extensions\": {\n            \"fields\": {}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Class already exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourcedId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n    \"title\": \"Advanced Mathematics\",\n    \"status\": \"active\",\n    \"classCode\": \"MATH-201\",\n    \"classType\": \"SCHEDULED\",\n    \"location\": \"Room 305\",\n    \"grades\": [\n        \"9\",\n        \"10\"\n    ],\n    \"subjects\": [\n        \"Mathematics\", \"Algebra\"\n    ],\n    \"course\": {\n        \"href\": \"/v1/courses/f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"sourcedId\": \"f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"type\": \"course\"\n    },\n    \"school\": {\n        \"href\": \"/v1/organizations/31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"sourcedId\": \"31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"type\": \"org\"\n    },\n    \"terms\":[ {\n        \"href\": \"/v1/academicSessions/4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"sourcedId\": \"4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"type\": \"academicSession\"\n    }],\n    \"periods\": [\n        \"p1\",\n        \"p2\"\n    ],\n    \"metadata\": {\n        \"extensions\": {\n            \"fields\": {}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication/Authorization Tests",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourcedId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n    \"title\": \"Advanced Mathematics\",\n    \"status\": \"active\",\n    \"classCode\": \"MATH-201\",\n    \"classType\": \"SCHEDULED\",\n    \"location\": \"Room 305\",\n    \"grades\": [\n        \"9\",\n        \"10\"\n    ],\n    \"subjects\": [\n        \"Mathematics\", \"Algebra\"\n    ],\n    \"course\": {\n        \"href\": \"/v1/courses/f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"sourcedId\": \"f474ea58-58c4-495d-ae02-6998914a8f45\",\n        \"type\": \"course\"\n    },\n    \"school\": {\n        \"href\": \"/v1/organizations/31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"sourcedId\": \"31e22de0-b4f1-499c-ab04-60a500c5c0c8\",\n        \"type\": \"org\"\n    },\n    \"terms\": [{\n        \"href\": \"/v1/academicSessions/4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"sourcedId\": \"4ffaf5e6-e1ba-4505-9c1e-d401f6c0d12b\",\n        \"type\": \"academicSession\"\n    }],\n    \"periods\": [\n        \"p1\",\n        \"p2\"\n    ],\n    \"metadata\": {\n        \"extensions\": {\n            \"fields\": {}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "x-client-id",
+			"value": "{{x-client-id}}",
+			"type": "string"
+		},
+		{
+			"key": "rosteringWriteServiceApiPrefix",
+			"value": "/custom/rostering/v1p0",
+			"type": "string"
+		},
+		{
+			"key": "x-app-key",
+			"value": "{{x-app-key}}",
+			"type": "string"
+		},
+		{
+			"key": "bearerToken",
+			"value": "{{bearer-token}}",
+			"type": "string"
+		}
+	]
+}

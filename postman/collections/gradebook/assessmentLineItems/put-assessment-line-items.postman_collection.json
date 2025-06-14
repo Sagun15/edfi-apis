@@ -1,0 +1,310 @@
+{
+	"info": {
+		"_postman_id": "63635534-96d7-4c93-b414-0e22ade255d0",
+		"name": "put-assessment-line-items",
+		"description": "Collection for updating AssessmentLineItems",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36990357"
+	},
+	"item": [
+		{
+			"name": "Put AssessmentLineItem (Happy Path 1)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{bearer-token}}"
+					}
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"assessmentLineItem\": {\n  \"sourcedId\": \"{{validSourcedId}}\",\n  \"status\": \"active\",\n  \"dateLastModified\": \"2025-01-22T12:00:00Z\",\n  \"metadata\": {\n  },\n  \"title\": \"smksalkacjdnsjsdn\",\n  \"description\": \"This is asdcsd\",\n  \"class\": {\n    \"href\": \"https://example.com\",\n    \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n    \"type\": \"class\"\n  },\n  \"parentAssessmentLineItem\": {\n    \"href\": \"/classes/b2a85993-8b03-4560-8ab3-d39b56570823\",\n    \"sourcedId\": \"8433f761-9cc4-4cb9-b7a5-11856ba45f52\",\n    \"type\": \"assessmentLineItem\"\n  },\n  \"scoreScale\": {\n    \"href\": \"https://example.com/scoreScale\",\n    \"sourcedId\": \"93de24b7-d8e2-4629-9f92-f169bc10ed40\",\n    \"type\": \"scoreScale\"\n  },\n  \"resultValueMin\": 0,\n  \"resultValueMax\": 100,\n  \"learningObjectiveSet\": [\n    {\n      \"source\": \"Source 1\",\n      \"learningObjectiveIds\": [\n        \"550e8400-e29b-41d4-a716-446655440004\",\n        \"550e8400-e29b-41d4-a716-446655440005\"\n      ]\n    },\n    {\n      \"source\": \"Source 2\"\n    }\n  ]\n}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentLineItems/{{validSourcedId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Put AssessmentLineItem (Happy Path 2)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{bearer-token}}"
+					}
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"assessmentLineItem\": {\n  \"sourcedId\": \"{{validSourcedId}}\",\n  \"status\": \"active\",\n  \"dateLastModified\": \"2025-01-22T12:00:00Z\",\n  \"metadata\": {\n    \"extensions\": {\n        \"check1\": \"check1\",\n        \"check2\": \"check2\",\n        \"check3\": {\n            \"check4\": \"check4\"\n        }\n    }\n  },\n  \"title\": \"Test title\",\n  \"class\": {\n    \"href\": \"https://example.com\",\n    \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n    \"type\": \"class\"\n  },\n  \"resultValueMin\": 1,\n  \"resultValueMax\": 100,\n  \"learningObjectiveSet\": [\n    {\n      \"source\": \"Source 1\",\n      \"learningObjectiveIds\": [\n        \"550e8400-e29b-41d4-a716-446655440004\",\n        \"550e8400-e29b-41d4-a716-446655440005\"\n      ]\n    },\n    {\n      \"source\": \"Source 2\"\n    }\n  ]\n}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentLineItems/{{validSourcedId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Put AssessmentLineItem (Bad Request)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{bearer-token}}"
+					}
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"assessmentLineItem\": {\n  \"sourcedId\": \"{{validSourcedId}}\",\n  \"status\": \"ACTIVE\",\n  \"dateLastModified\": \"2025-01-22T12:00:00Z\",\n  \"metadata\": {\n  },\n  \"title\": \"\",\n  \"description\": \"This is asdcsd\",\n  \"class\": {\n    \"href\": \"https://example.com\",\n    \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n    \"type\": \"class\"\n  },\n  \"parentAssessmentLineItem\": {\n    \"href\": \"/classes/b2a85993-8b03-4560-8ab3-d39b56570823\",\n    \"sourcedId\": \"8433f761-9cc4-4cb9-b7a5-11856ba45f52\",\n    \"type\": \"assessmentLineItem\"\n  },\n  \"scoreScale\": {\n    \"href\": \"https://example.com/scoreScale\",\n    \"sourcedId\": \"93de24b7-d8e2-4629-9f92-f169bc10ed401\",\n    \"type\": \"scoreScale\"\n  },\n  \"resultValueMin\": 0,\n  \"resultValueMax\": 100,\n  \"learningObjectiveSet\": [\n    {\n      \"source\": \"Source 1\",\n      \"learningObjectiveIds\": [\n        \"550e8400-e29b-41d4-a716-4466554400041\",\n        \"550e8400-e29b-41d4-a716-4466554400051\"\n      ]\n    },\n    {\n      \"source\": \"Source 2\"\n    }\n  ]\n}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentLineItems/{{validSourcedId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Put AssessmentLineItem (Conflict Error)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{bearer-token}}"
+					}
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"assessmentLineItem\": {\n  \"sourcedId\": \"{{alreadyExistingSourcedId}}\",\n  \"status\": \"active\",\n  \"dateLastModified\": \"2025-01-22T12:00:00Z\",\n  \"metadata\": {\n    \"extensions\": {\n        \"check1\": \"check1\",\n        \"check2\": \"check2\",\n        \"check3\": {\n            \"check4\": \"check4\"\n        }\n    }\n  },\n  \"title\": \"Test title\",\n  \"class\": {\n    \"href\": \"https://example.com\",\n    \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n    \"type\": \"class\"\n  },\n  \"parentAssessmentLineItem\": {\n    \"href\": \"/classes/b2a85993-8b03-4560-8ab3-d39b56570823\",\n    \"sourcedId\": \"8433f761-9cc4-4cb9-b7a5-11856ba45f52\",\n    \"type\": \"assessmentLineItem\"\n  },\n  \"scoreScale\": {\n    \"href\": \"https://example.com/scoreScale\",\n    \"sourcedId\": \"93de24b7-d8e2-4629-9f92-f169bc10ed40\",\n    \"type\": \"scoreScale\"\n  },\n  \"resultValueMin\": 1,\n  \"resultValueMax\": 100,\n  \"learningObjectiveSet\": [\n    {\n      \"source\": \"Source 1\",\n      \"learningObjectiveIds\": [\n        \"550e8400-e29b-41d4-a716-446655440004\",\n        \"550e8400-e29b-41d4-a716-446655440005\"\n      ]\n    },\n    {\n      \"source\": \"Source 2\"\n    }\n  ]\n}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentLineItems/{{alreadyExistingSourcedId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Put AssessmentLineItem (Not Found Error)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{bearer-token}}"
+					}
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"assessmentLineItem\": {\n  \"sourcedId\": \"{{validSourcedId}}\",\n  \"status\": \"active\",\n  \"dateLastModified\": \"2025-01-22T12:00:00Z\",\n  \"metadata\": {\n    \"extensions\": {\n        \"check1\": \"check1\",\n        \"check2\": \"check2\",\n        \"check3\": {\n            \"check4\": \"check4\"\n        }\n    }\n  },\n  \"title\": \"Test title\",\n  \"class\": {\n    \"href\": \"https://example.com\",\n    \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd01\",\n    \"type\": \"class\"\n  },\n  \"parentAssessmentLineItem\": {\n    \"href\": \"/classes/b2a85993-8b03-4560-8ab3-d39b56570823\",\n    \"sourcedId\": \"8433f761-9cc4-4cb9-b7a5-11856ba45f53\",\n    \"type\": \"assessmentLineItem\"\n  },\n  \"scoreScale\": {\n    \"href\": \"https://example.com/scoreScale\",\n    \"sourcedId\": \"93de24b7-d8e2-4629-9f92-f169bc10ed41\",\n    \"type\": \"scoreScale\"\n  },\n  \"resultValueMin\": 1,\n  \"resultValueMax\": 100,\n  \"learningObjectiveSet\": [\n    {\n      \"source\": \"Source 1\",\n      \"learningObjectiveIds\": [\n        \"550e8400-e29b-41d4-a716-446655440004\",\n        \"550e8400-e29b-41d4-a716-446655440005\"\n      ]\n    },\n    {\n      \"source\": \"Source 2\"\n    }\n  ]\n}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/assessmentLineItems/{{validSourcedId}}"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "x-client-id",
+			"value": "{{x-client-id}}",
+			"type": "string"
+		},
+		{
+			"key": "gradebookServiceApiPrefix",
+			"value": "/ims/oneroster/gradebook/v1p2",
+			"type": "string"
+		},
+		{
+			"key": "x-app-key",
+			"value": "{{x-app-key}}",
+			"type": "string"
+		},
+		{
+			"key": "bearerToken",
+			"value": "{{bearer-token}}",
+			"type": "string"
+		},
+		{
+			"key": "validSourcedId",
+			"value": "<valid-sourced-id>",
+			"type": "default"
+		},
+		{
+			"key": "alreadyExistingSourcedId",
+			"value": "<already-existing-sourced-id>",
+			"type": "string"
+		},
+		{
+			"key": "nonExistentSourcedId",
+			"value": "<non-existent-sourced-id>",
+			"type": "default"
+		}
+	]
+}

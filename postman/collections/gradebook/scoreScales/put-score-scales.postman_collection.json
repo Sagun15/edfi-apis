@@ -1,0 +1,573 @@
+{
+	"info": {
+		"_postman_id": "994fe0e9-adfd-4e25-8e58-69dc6d49a38e",
+		"name": "put-score-scales",
+		"description": "Test suite for ScoreScale PUT API focusing on happy paths and negative cases",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36990357"
+	},
+	"item": [
+		{
+			"name": "Happy Path Tests",
+			"item": [
+				{
+					"name": "Success case with minimum required fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response body should be empty\", () => {",
+									"    pm.expect(pm.response.text()).to.be.empty;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scoreScale\": {\n    \"sourcedId\": \"{{validSourcedId}\",\n    \"status\": \"active\",\n    \"dateLastModified\": \"2025-02-13T06:59:32Z\",\n    \"title\": \"test-item-for-put\",\n    \"type\": \"grade\",\n    \"class\": {\n        \"href\": \"https://example.com\",\n        \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n        \"type\": \"class\"\n    },\n    \"scoreScaleValue\": [\n      {\n        \"itemValueLHS\": \"1-2\",\n        \"itemValueRHS\": \"A\"\n      },{\n        \"itemValueLHS\": \"3-4\",\n        \"itemValueRHS\": \"B\"\n      },{\n        \"itemValueLHS\": \"5-6\",\n        \"itemValueRHS\": \"C\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Success case with all fields (ScoreScaleValue : Range)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response body should be empty\", () => {",
+									"    pm.expect(pm.response.text()).to.be.empty;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scoreScale\": {\n    \"sourcedId\": \"{{validSourcedId}}\",\n    \"status\": \"active\",\n    \"dateLastModified\": \"2025-02-13T06:59:32Z\",\n    \"metadata\": {\n      \"additionalProp1\": {}\n    },\n    \"title\": \"test-item-for-put\",\n    \"type\": \"grade\",\n    \"course\": {\n      \"href\": \"https://example.com\",\n      \"sourcedId\": \"50dbfc64-be7e-4fd1-a896-bb6ce1d4f13b\",\n      \"type\": \"course\"\n    },\n    \"class\": {\n        \"href\": \"https://example.com\",\n        \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n        \"type\": \"class\"\n    },\n    \"scoreScaleValue\": [\n      {\n        \"itemValueLHS\": \"1-2\",\n        \"itemValueRHS\": \"A\"\n      },{\n        \"itemValueLHS\": \"3-4\",\n        \"itemValueRHS\": \"B\"\n      },{\n        \"itemValueLHS\": \"5-6\",\n        \"itemValueRHS\": \"C\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Success case with all fields (ScoreScaleValue : Number)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response body should be empty\", () => {",
+									"    pm.expect(pm.response.text()).to.be.empty;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scoreScale\": {\n    \"sourcedId\": \"{{validSourcedId}}\",\n    \"status\": \"active\",\n    \"dateLastModified\": \"2025-02-13T06:59:32Z\",\n    \"metadata\": {\n      \"additionalProp1\": {}\n    },\n    \"title\": \"test-item-for-put\",\n    \"type\": \"grade\",\n    \"course\": {\n      \"href\": \"https://example.com\",\n      \"sourcedId\": \"50dbfc64-be7e-4fd1-a896-bb6ce1d4f13b\",\n      \"type\": \"course\"\n    },\n    \"class\": {\n        \"href\": \"https://example.com\",\n        \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n        \"type\": \"class\"\n    },\n    \"scoreScaleValue\": [\n      {\n        \"itemValueLHS\": \"1\",\n        \"itemValueRHS\": \"Excellent\"\n      },{\n        \"itemValueLHS\": \"3\",\n        \"itemValueRHS\": \"Average\"\n      },{\n        \"itemValueLHS\": \"5\",\n        \"itemValueRHS\": \"Needs Improvement\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Tests",
+			"item": [
+				{
+					"name": "Invalid ScoreScaleValue LHS Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 422\", () => {",
+									"    pm.response.to.have.status(422);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates invalid format\", () => {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.message).to.include(\"Invalid LHS format\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scoreScale\": {\n    \"sourcedId\": \"{{validSourcedId}}\",\n    \"status\": \"active\",\n    \"dateLastModified\": \"2025-02-13T06:59:32Z\",\n    \"metadata\": {\n      \"additionalProp1\": {}\n    },\n    \"title\": \"test-item-for-put\",\n    \"type\": \"grade\",\n    \"course\": {\n      \"href\": \"https://example.com\",\n      \"sourcedId\": \"50dbfc64-be7e-4fd1-a896-bb6ce1d4f13b\",\n      \"type\": \"course\"\n    },\n    \"class\": {\n        \"href\": \"https://example.com\",\n        \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n        \"type\": \"class\"\n    },\n    \"scoreScaleValue\": [\n      {\n        \"itemValueLHS\": \"A-B\",\n        \"itemValueRHS\": \"Excellent\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid ScoreScaleValue : Mixed Formats",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 422\", () => {",
+									"    pm.response.to.have.status(422);",
+									"});",
+									"",
+									"pm.test(\"Error indicates mixed format issue\", () => {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.message).to.include(\"must be in range format\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scoreScale\": {\n    \"sourcedId\": \"{{validSourcedId}}\",\n    \"status\": \"active\",\n    \"dateLastModified\": \"2025-02-13T06:59:32Z\",\n    \"metadata\": {\n      \"additionalProp1\": {}\n    },\n    \"title\": \"test-item-for-put\",\n    \"type\": \"grade\",\n    \"course\": {\n      \"href\": \"https://example.com\",\n      \"sourcedId\": \"50dbfc64-be7e-4fd1-a896-bb6ce1d4f13b\",\n      \"type\": \"course\"\n    },\n    \"class\": {\n        \"href\": \"https://example.com\",\n        \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n        \"type\": \"class\"\n    },\n    \"scoreScaleValue\": [\n      { \"itemValueLHS\": \"90-100\", \"itemValueRHS\": \"A\" },\n      { \"itemValueLHS\": \"4\", \"itemValueRHS\": \"B\" }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid ScoreScaleValue : Overlapping Ranges",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 422\", () => {",
+									"    pm.response.to.have.status(422);",
+									"});",
+									"",
+									"pm.test(\"Error indicates overlapping ranges\", () => {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.message).to.include(\"Range overlaps\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scoreScale\": {\n    \"sourcedId\": \"{{validSourcedId}}\",\n    \"status\": \"active\",\n    \"dateLastModified\": \"2025-02-13T06:59:32Z\",\n    \"metadata\": {\n      \"additionalProp1\": {}\n    },\n    \"title\": \"test-item-for-put\",\n    \"type\": \"grade\",\n    \"course\": {\n      \"href\": \"https://example.com\",\n      \"sourcedId\": \"50dbfc64-be7e-4fd1-a896-bb6ce1d4f13b\",\n      \"type\": \"course\"\n    },\n    \"class\": {\n        \"href\": \"https://example.com\",\n        \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n        \"type\": \"class\"\n    },\n    \"scoreScaleValue\": [\n      { \"itemValueLHS\": \"90-100\", \"itemValueRHS\": \"A\" },\n      { \"itemValueLHS\": \"95-105\", \"itemValueRHS\": \"B\" } \n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid course reference",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scoreScale\": {\n    \"sourcedId\": \"{{validSourcedId}}\",\n    \"status\": \"active\",\n    \"dateLastModified\": \"2025-02-13T06:59:32Z\",\n    \"metadata\": {\n      \"additionalProp1\": {}\n    },\n    \"title\": \"test-item-for-put\",\n    \"type\": \"grade\",\n    \"course\": {\n      \"href\": \"https://example.com\",\n      \"sourcedId\": \"50dbfc64-be7e-4fd1-a896-bb6ce1d4f13a\",\n      \"type\": \"course\"\n    },\n    \"class\": {\n        \"href\": \"https://example.com\",\n        \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n        \"type\": \"class\"\n    },\n    \"scoreScaleValue\": [\n      {\n        \"itemValueLHS\": \"1\",\n        \"itemValueRHS\": \"Excellent\"\n      },{\n        \"itemValueLHS\": \"3\",\n        \"itemValueRHS\": \"Average\"\n      },{\n        \"itemValueLHS\": \"5\",\n        \"itemValueRHS\": \"Needs Improvement\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid class reference",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error indicates class not found\", () => {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.message).to.include(\"Class\");",
+									"    pm.expect(response.message).to.include(\"not found\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scoreScale\": {\n    \"sourcedId\": \"{{validSourcedId}}\",\n    \"status\": \"active\",\n    \"dateLastModified\": \"2025-02-13T06:59:32Z\",\n    \"metadata\": {\n      \"additionalProp1\": {}\n    },\n    \"title\": \"test-item-for-put\",\n    \"type\": \"grade\",\n    \"course\": {\n      \"href\": \"https://example.com\",\n      \"sourcedId\": \"50dbfc64-be7e-4fd1-a896-bb6ce1d4f13b\",\n      \"type\": \"course\"\n    },\n    \"class\": {\n        \"href\": \"https://example.com\",\n        \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd01\",\n        \"type\": \"class\"\n    },\n    \"scoreScaleValue\": [\n      {\n        \"itemValueLHS\": \"1\",\n        \"itemValueRHS\": \"Excellent\"\n      },{\n        \"itemValueLHS\": \"3\",\n        \"itemValueRHS\": \"Average\"\n      },{\n        \"itemValueLHS\": \"5\",\n        \"itemValueRHS\": \"Needs Improvement\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Create with already existing score scale SourcedId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 409\", () => {",
+									"    pm.response.to.have.status(409);",
+									"});",
+									"",
+									"pm.test(\"Error indicates conflict\", () => {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.message).to.include(\"already exists\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scoreScale\": {\n    \"sourcedId\": \"{{validSourcedId}}\",\n    \"status\":\"active\",\n    \"dateLastModified\": \"2025-02-13T06:59:32Z\",\n    \"metadata\": {\n      \"additionalProp1\": {}\n    },\n    \"title\": \"test-item-for-put\",\n    \"type\": \"grade\",\n    \"course\": {\n      \"href\": \"https://example.com\",\n      \"sourcedId\": \"50dbfc64-be7e-4fd1-a896-bb6ce1d4f13b\",\n      \"type\": \"course\"\n    },\n    \"class\": {\n        \"href\": \"https://example.com\",\n        \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd00\",\n        \"type\": \"class\"\n    },\n    \"scoreScaleValue\": [\n      {\n        \"itemValueLHS\": \"1\",\n        \"itemValueRHS\": \"Excellent\"\n      },{\n        \"itemValueLHS\": \"3\",\n        \"itemValueRHS\": \"Average\"\n      },{\n        \"itemValueLHS\": \"5\",\n        \"itemValueRHS\": \"Needs Improvement\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Unauthorized request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scoreScale\": {\n    \"sourcedId\": \"{{validSourcedId}}\",\n    \"dateLastModified\": \"2025-02-13T06:59:32Z\",\n    \"metadata\": {\n      \"additionalProp1\": {}\n    },\n    \"title\": \"test-item-for-put\",\n    \"type\": \"grade\",\n    \"course\": {\n      \"href\": \"https://example.com\",\n      \"sourcedId\": \"50dbfc64-be7e-4fd1-a896-bb6ce1d4f13b\",\n      \"type\": \"course\"\n    },\n    \"class\": {\n        \"href\": \"https://example.com\",\n        \"sourcedId\": \"f2889ae9-a813-4ae5-9f7f-2df7be97bd01\",\n        \"type\": \"class\"\n    },\n    \"scoreScaleValue\": [\n      {\n        \"itemValueLHS\": \"1\",\n        \"itemValueRHS\": \"Excellent\"\n      },{\n        \"itemValueLHS\": \"3\",\n        \"itemValueRHS\": \"Average\"\n      },{\n        \"itemValueLHS\": \"5\",\n        \"itemValueRHS\": \"Needs Improvement\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "x-client-id",
+			"value": "{{x-client-id}}",
+			"type": "string"
+		},
+		{
+			"key": "gradebookServiceApiPrefix",
+			"value": "/ims/oneroster/gradebook/v1p2",
+			"type": "string"
+		},
+		{
+			"key": "x-app-key",
+			"value": "{{x-app-key}}",
+			"type": "string"
+		},
+		{
+			"key": "bearerToken",
+			"value": "{{bearer-token}}",
+			"type": "string"
+		},
+		{
+			"key": "validSourcedId",
+			"value": "<valid-sourced-id>",
+			"type": "string"
+		}
+	]
+}

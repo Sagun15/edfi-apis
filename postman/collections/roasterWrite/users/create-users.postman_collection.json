@@ -1,0 +1,96 @@
+{
+  "info": {
+    "_postman_id": "cdc2f643-7c72-4cfb-8a47-bce45248d82b",
+    "name": "create-users",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31022060"
+  },
+  "item": [
+    {
+      "name": "Minimum  fields",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearer-token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"sourcedId\": \"f0d298e2-d9d9-4d36-a0ad-8169d47cb01d\",\n    \"status\": \"active\",\n    \"givenName\": \"John\",\n    \"familyName\": \"Doe\",\n    \"primaryOrg\": {\n        \"href\": \"https://example.com/orgs/1\",\n        \"sourcedId\": \"91edfc73-d1ab-4168-93de-85a71d7f318d\",\n        \"type\": \"org\"\n    }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users",
+          "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+          "path": ["users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "All Fields",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearer-token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"sourcedId\": \"f0d298e2-d9d9-4d36-a0ad-8169d47cb01d\",\n    \"metadata\": {\n        \"customField1\": \"value1\",\n        \"customField2\": \"value2\"\n    },\n    \"status\": \"inactive\",\n    \"givenName\": \"John\",\n    \"familyName\": \"Doe\",\n    //   \"middleName\": \"Michael\",\n    //   \"preferredFirstName\": \"Johnny\",\n    //   \"preferredMiddleName\": \"Mike\",\n    //   \"preferredLastName\": \"D.\",\n    //   \"pronouns\": \"he/him\",\n    //   \"email\": \"john.doe@example.com\",\n    //   \"sms\": \"+1234567890\",\n    //   \"phone\": \"+0987654321\",\n    \"agents\": [\n        {\n            \"href\": \"https://example.com/agents/1\",\n            \"sourcedId\": \"022ca0f3-5d28-4e14-b7c1-9698025cd2d0\",\n            \"type\": \"user\"\n        },\n        {\n            \"href\": \"https://example.com/agents/1\",\n            \"sourcedId\": \"022ca0f3-5d28-4e14-b7c1-9698025cd2d0\",\n            \"type\": \"user\"\n        },\n        {\n            \"href\": \"https://example.com/agents/1\",\n            \"sourcedId\": \"022ca0f3-5d28-4e14-b7c1-9698025cd2d0\",\n            \"type\": \"user\"\n        }\n    ],\n    \"primaryOrg\": {\n        \"href\": \"https://example.com/orgs/1\",\n        \"sourcedId\": \"91edfc73-d1ab-4168-93de-85a71d7f318d\",\n        \"type\": \"org\"\n    }\n    //   \"grades\": [\"Grade 10\", \"Grade 11\"],\n    //   \"demographics\": {\n    //     \"sourcedId\": \"c710a25f-aade-40c1-aee3-3185602e5e71\",\n    //     \"metadata\": {\n    //       \"extensions\": {\"fields\": {\"demographicCustomField\": \"demoValue\"}}\n    //     },\n    //     \"status\": \"active\",\n    //     \"birthDate\": \"2025-02-29\",\n    //     \"sex\": \"MALE\",\n    //     \"americanIndianOrAlaskaNative\": true, \n    //     \"asian\": true, \n    //     \"blackOrAfricanAmerican\": true, \n    //     \"nativeHawaiianOrOtherPacificIslander\": true, \n    //     \"white\": true, \n    //     \"demographicRaceTwoOrMoreRaces\": false, \n    //     \"hispanicOrLatinoEthnicity\": false,\n    //     \"countryOfBirthCode\": \"string\",\n    //     \"stateOfBirthAbbreviation\": \"string\",\n    //     \"cityOfBirth\": \"string\", \n    //     \"publicSchoolResidenceStatus\": \"string\" \n    //   }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users",
+          "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+          "path": ["users"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

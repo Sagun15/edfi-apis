@@ -1,0 +1,589 @@
+{
+  "info": {
+    "_postman_id": "fb9f6f48-2382-4c02-97db-7bd1a8f48c1d",
+    "name": "patchUserProfile",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31022060"
+  },
+  "item": [
+    {
+      "name": "Happy Path Scenarios",
+      "item": [
+        {
+          "name": "Update with All Valid Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"profileType\": \"admin\",\n    \"description\": \"System administrator profile\",\n    \"vendorId\": \"vendor123\",\n    \"roleId\": \"{{roleId}}\",\n    \"applicationId\": \"{{applicationId}}\",\n    \"credentials\": [\n        {\n            \"type\": \"basic\",\n            \"username\": \"admin_user\",\n            \"password\": \"securePassword123\",\n            \"extensions\": {\n                \"additionalProperties\": \"customValue\"\n            }\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourcedId}}/userProfiles/{{userProfileId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": [
+                "users",
+                "{{userSourcedId}}",
+                "userProfiles",
+                "{{userProfileId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative Tests",
+      "item": [
+        {
+          "name": "Invalid UUID Format",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response contains correct message\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+                  "    pm.expect(responseData.imsx_severity).to.equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('invalid_request_body');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"profileType\": \"admin\", \"description\": \"System administrator profile\", \"vendorId\": \"vendor123\", \"roleId\": \"{{roleId}}\", \"applicationId\": \"{{applicationId}}\", \"credentials\": [{ \"type\": \"basic\", \"username\": \"admin_user\", \"password\": \"securePassword123\", \"extensions\":{ \"additionalProperties\":\"customValue\" } }] }"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourcedId}}/userProfiles/{{userProfileId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": [
+                "users",
+                "{{userSourcedId}}",
+                "userProfiles",
+                "{{userProfileId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Empty String in the fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response contains correct message\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+                  "    pm.expect(responseData.imsx_severity).to.equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description')",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('invalid_request_body');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"profileType\": \"\",\n    \"description\": \"System administrator profile\",\n    \"vendorId\": \"vendor123\",\n    \"roleId\": \"{{roleId}}\",\n    \"applicationId\": \"{{applicationId}}\",\n    \"credentials\": [\n        {\n            \"type\": \"basic\",\n            \"username\": \"admin_user\",\n            \"password\": \"securePassword123\",\n            \"extensions\": {\n                \"additionalProperties\": \"customValue\"\n            }\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourcedId}}/userProfiles/{{userProfileId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": [
+                "users",
+                "{{userSourcedId}}",
+                "userProfiles",
+                "{{userProfileId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Non-existent roleId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response contains correct message\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+                  "    pm.expect(responseData.imsx_severity).to.equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description')",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('unknownobject');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"profileType\": \"admin\",\n    \"description\": \"System administrator profile\",\n    \"vendorId\": \"vendor123\",\n    \"roleId\": \"{{roleId}}\",\n    \"applicationId\": \"{{applicationId}}\",\n    \"credentials\": [\n        {\n            \"type\": \"basic\",\n            \"username\": \"admin_user\",\n            \"password\": \"securePassword123\",\n            \"extensions\": {\n                \"additionalProperties\": \"customValue\"\n            }\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourcedId}}/userProfiles/{{userProfileId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": [
+                "users",
+                "{{userSourcedId}}",
+                "userProfiles",
+                "{{userProfileId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Non-existent applicationId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response contains correct message\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+                  "    pm.expect(responseData.imsx_severity).to.equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description')",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('unknownobject');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"profileType\": \"admin\",\n    \"description\": \"System administrator profile\",\n    \"vendorId\": \"vendor123\",\n    \"roleId\": \"{{roleId}}\",\n    \"applicationId\": \"{{applicationId}}\",\n    \"credentials\": [\n        {\n            \"type\": \"basic\",\n            \"username\": \"admin_user\",\n            \"password\": \"securePassword123\",\n            \"extensions\": {\n                \"additionalProperties\": \"customValue\"\n            }\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourcedId}}/userProfiles/{{userProfileId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": [
+                "users",
+                "{{userSourcedId}}",
+                "userProfiles",
+                "{{userProfileId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User does not exist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response contains correct message\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+                  "    pm.expect(responseData.imsx_severity).to.equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description')",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('unknownobject');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"profileType\": \"admin\",\n    \"description\": \"System administrator profile\",\n    \"vendorId\": \"vendor123\",\n    \"roleId\": \"{{roleId}}\",\n    \"applicationId\": \"{{applicationId}}\",\n    \"credentials\": [\n        {\n            \"type\": \"basic\",\n            \"username\": \"admin_user\",\n            \"password\": \"securePassword123\",\n            \"extensions\": {\n                \"additionalProperties\": \"customValue\"\n            }\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourcedId}}/userProfiles/{{userProfileId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": [
+                "users",
+                "{{userSourcedId}}",
+                "userProfiles",
+                "{{userProfileId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UserProfile does not exist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response contains correct message\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+                  "    pm.expect(responseData.imsx_severity).to.equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description')",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('unknownobject');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"profileType\": \"admin\",\n    \"description\": \"System administrator profile\",\n    \"vendorId\": \"vendor123\",\n    \"roleId\": \"{{roleId}}\",\n    \"applicationId\": \"{{applicationId}}\",\n    \"credentials\": [\n        {\n            \"type\": \"basic\",\n            \"username\": \"admin_user\",\n            \"password\": \"securePassword123\",\n            \"extensions\": {\n                \"additionalProperties\": \"customValue\"\n            }\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourcedId}}/userProfiles/{{userProfileId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": [
+                "users",
+                "{{userSourcedId}}",
+                "userProfiles",
+                "{{userProfileId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unauthorized Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response structure is correct\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+                  "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description');",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('unauthorisedrequest');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourcedId}}/userProfiles/{{userProfileId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": [
+                "users",
+                "{{userSourcedId}}",
+                "userProfiles",
+                "{{userProfileId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Empty body in the payload",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response contains correct message\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData.imsx_codeMajor).to.equal('failure');",
+                  "    pm.expect(responseData.imsx_severity).to.equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description')",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "    pm.expect(responseData.imsx_CodeMinor.imsx_codeMinorField[0].imsx_codeMinorFieldValue).to.include('bad_request');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/{{userSourcedId}}/userProfiles/{{userProfileId}}",
+              "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+              "path": [
+                "users",
+                "{{userSourcedId}}",
+                "userProfiles",
+                "{{userProfileId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

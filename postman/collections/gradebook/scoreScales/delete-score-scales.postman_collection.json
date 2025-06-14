@@ -1,0 +1,330 @@
+{
+	"info": {
+		"_postman_id": "0b2ba31b-01f4-426b-b0c5-f6b66921622a",
+		"name": "deleteScoreScale Copy",
+		"description": "Test suite for ScoreScale DELETE API focusing on happy paths and negative cases",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36990357"
+	},
+	"item": [
+		{
+			"name": "Happy Path Tests",
+			"item": [
+				{
+					"name": "Delete Score Scale (Success case)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"// Verify no response body for 204",
+									"pm.test(\"No response body\", function() {",
+									"    pm.response.to.not.have.body();",
+									"});",
+									"",
+									"// Performance test",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Tests",
+			"item": [
+				{
+					"name": "Invalid SourcedId Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response structure is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+									"    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/invalid-uuid-format"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-existent Score Scale",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error response structure is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+									"    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description').to.include('not found');",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    ",
+									"    const errorField = responseData.imsx_CodeMinor.imsx_codeMinorField[0];",
+									"    pm.expect(errorField).to.have.property('imsx_codeMinorFieldName').equal('TargetEndSystem');",
+									"    pm.expect(errorField).to.have.property('imsx_codeMinorFieldValue').equal('unknownobject');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{nonExistentSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Already Deleted Score Scale",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error response structure is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+									"    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description').to.include('already been deleted');",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    ",
+									"    const errorField = responseData.imsx_CodeMinor.imsx_codeMinorField[0];",
+									"    pm.expect(errorField).to.have.property('imsx_codeMinorFieldName').equal('TargetEndSystem');",
+									"    pm.expect(errorField).to.have.property('imsx_codeMinorFieldValue').equal('unknownobject');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{deletedSourcedId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Unauthorized Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Error response structure is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+									"    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+									"    pm.expect(responseData).to.have.property('imsx_description').equal('Missing required headers');",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+									"    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+									"    ",
+									"    const errorField = responseData.imsx_CodeMinor.imsx_codeMinorField[0];",
+									"    pm.expect(errorField).to.have.property('imsx_codeMinorFieldName').equal('TargetEndSystem');",
+									"    pm.expect(errorField).to.have.property('imsx_codeMinorFieldValue').equal('unauthorisedrequest');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales/{{validSourcedId}}"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "validSourcedId",
+			"value": "<valid-sourced-id>",
+			"type": "string"
+		},
+		{
+			"key": "nonExistentSourcedId",
+			"value": "<non-existent-sourced-id>",
+			"type": "string"
+		},
+		{
+			"key": "deletedSourcedId",
+			"value": "<deleted-sourced-id>",
+			"type": "string"
+		},
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "x-client-id",
+			"value": "{{x-client-id}}",
+			"type": "string"
+		},
+		{
+			"key": "gradebookServiceApiPrefix",
+			"value": "/ims/oneroster/gradebook/v1p2",
+			"type": "string"
+		},
+		{
+			"key": "x-app-key",
+			"value": "{{x-app-key}}",
+			"type": "string"
+		},
+		{
+			"key": "bearerToken",
+			"value": "{{bearer-token}}",
+			"type": "string"
+		}
+	]
+}

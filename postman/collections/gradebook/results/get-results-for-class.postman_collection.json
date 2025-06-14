@@ -1,0 +1,685 @@
+{
+  "info": {
+    "_postman_id": "f93dc879-27a1-4865-99fb-39c3e2ea6223",
+    "name": "get-results-for-class",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+    "_exporter_id": "36990357"
+  },
+  "item": [
+    {
+      "name": "Happy Path Tests",
+      "item": [
+        {
+          "name": "Valid Basic Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Basic Valid Request - Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response structure is valid\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('success');",
+                  "    pm.expect(responseData).to.have.property('imsx_severity').equal('status');",
+                  "    pm.expect(responseData).to.have.property('results').that.is.an('array');",
+                  "    ",
+                  "    if(responseData.results.length > 0) {",
+                  "        const firstResult = responseData.results[0];",
+                  "        ",
+                  "        pm.expect(firstResult).to.have.property('sourcedId').that.is.a('string');",
+                  "        pm.expect(firstResult).to.have.property('status').that.is.a('string');",
+                  "        ",
+                  "        pm.expect(firstResult).to.have.property('score');",
+                  "        pm.expect(firstResult).to.have.property('textScore');",
+                  "        ",
+                  "        pm.expect(firstResult.status).to.be.oneOf(['active', 'inactive', 'tobedeleted']);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/classes/{{validClassSourcedId}}/results"
+          },
+          "response": []
+        },
+        {
+          "name": "Basic Pagination",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Basic Pagination - Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Pagination parameters are respected\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData.results.length).to.be.at.most(",
+                  "        Number(pm.request.url.query.get('limit'))",
+                  "    );",
+                  "    ",
+                  "    if (pm.response.headers.has('X-Total-Count')) {",
+                  "        pm.expect(pm.response.headers.get('X-Total-Count')).to.be.a('string');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/classes/{{validClassSourcedId}}/results?limit=3&offset=0",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["classes", "{{validClassSourcedId}}", "results"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "3"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sort and Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Sort and Order - Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Results are properly sorted\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    const results = responseData.results;",
+                  "    ",
+                  "    if (results.length > 1) {",
+                  "        const orderBy = pm.request.url.query.get('orderBy') || 'ASC';",
+                  "        const sortField = pm.request.url.query.get('sort') || 'dateLastModified';",
+                  "        ",
+                  "        const isSorted = results.every((result, index) => {",
+                  "            if (index === 0) return true;",
+                  "            const prev = results[index - 1][sortField];",
+                  "            const curr = result[sortField];",
+                  "            return orderBy === 'ASC' ? prev <= curr : prev >= curr;",
+                  "        });",
+                  "        ",
+                  "        pm.expect(isSorted).to.be.true;",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/classes/{{validClassSourcedId}}/results?sort=dateLastModified&orderBy=ASC",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["classes", "{{validClassSourcedId}}", "results"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "dateLastModified"
+                },
+                {
+                  "key": "orderBy",
+                  "value": "ASC"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Field Selection",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Field Selection - Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Only requested fields are returned\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    const fields = (pm.request.url.query.get('fields') || '')",
+                  "        .split(',')",
+                  "        .filter(Boolean);",
+                  "    ",
+                  "    if (fields.length > 0 && responseData.results.length > 0) {",
+                  "        const firstResult = responseData.results[0];",
+                  "        const returnedFields = Object.keys(firstResult);",
+                  "        ",
+                  "        fields.forEach(field => {",
+                  "            pm.expect(returnedFields).to.include(field);",
+                  "        });",
+                  "        ",
+                  "        returnedFields.forEach(field => {",
+                  "            pm.expect(fields).to.include(field);",
+                  "        });",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/classes/{{validClassSourcedId}}/results?fields=sourcedId,score",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["classes", "{{validClassSourcedId}}", "results"],
+              "query": [
+                {
+                  "key": "fields",
+                  "value": "sourcedId,score"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Filter - Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Filter is correctly applied\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    const filter = pm.request.url.query.get('filter');",
+                  "    ",
+                  "    if (filter && filter.includes(\"status='active'\")) {",
+                  "        const allActive = responseData.results.every(result => ",
+                  "            result.status === 'active'",
+                  "        );",
+                  "        pm.expect(allActive).to.be.true;",
+                  "    }",
+                  "    ",
+                  "    pm.expect(responseData.results).to.be.an('array');",
+                  "    if (responseData.results.length > 0) {",
+                  "        console.log(\"Sample filtered results:\", ",
+                  "            responseData.results.slice(0, 2));",
+                  "    }",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/classes/{{validClassSourcedId}}/results?filter=status='active'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["classes", "{{validClassSourcedId}}", "results"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "status='active'"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Empty Results",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Empty Results - Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Empty results handled correctly\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor')",
+                  "        .equal('success');",
+                  "    pm.expect(responseData).to.have.property('results')",
+                  "        .that.is.an('array').that.is.empty;",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/classes/{{classSourcedIdWithEmptyResults}}/results"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative Tests",
+      "item": []
+    },
+    {
+      "name": "Non-existent Class",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"1.2 Non-existent Class - Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"1.2 Non-existent Class - Error response structure is valid\", function () {",
+              "    const responseData = pm.response.json();",
+              "    ",
+              "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+              "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+              "    pm.expect(responseData).to.have.property('imsx_description').that.includes('not found');",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.test(\"Non-existent Class - Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Error response structure is correct\", function () {",
+              "    const responseData = pm.response.json();",
+              "    ",
+              "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+              "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+              "    pm.expect(responseData).to.have.property('imsx_description')",
+              "        .that.includes('No class found with sourced id:');",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{bearer-token}}",
+            "type": "text"
+          }
+        ],
+        "url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/classes/{{invalidClassSourcedId}}/results"
+      },
+      "response": []
+    },
+    {
+      "name": "Invalid Class ID Format",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Invalid Class ID Format - Status code is 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test(\"Error response structure is correct\", function () {",
+              "    const responseData = pm.response.json();",
+              "    ",
+              "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+              "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+              "    pm.expect(responseData).to.have.property('imsx_description')",
+              "    .equal('Sourced Id must be of type UUID');",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{bearer-token}}",
+            "type": "text"
+          }
+        ],
+        "url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/classes/invalid-uuid-format/results"
+      },
+      "response": []
+    },
+    {
+      "name": "Edge Cases",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Edge Cases - Invalid pagination values\", function () {",
+              "    const limit = Number(pm.request.url.query.get('limit'));",
+              "    const offset = Number(pm.request.url.query.get('offset'));",
+              "    ",
+              "    if (limit <= 0 || offset < 0) {",
+              "        pm.expect(pm.response.code).to.equal(400);",
+              "        const responseData = pm.response.json();",
+              "        pm.expect(responseData.imsx_description)",
+              "            .to.include('must be a positive number');",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{bearer-token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/classes/{{validClassSourcedId}}/results?limit=0",
+          "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+          "path": ["classes", "{{validClassSourcedId}}", "results"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "0"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Invalid Sort Field",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Invalid Sort Field - Status code is 400\", function () {",
+              "    const sortField = pm.request.url.query.get('sort');",
+              "    const validFields = ['dateLastModified', 'score', 'status']; ",
+              "    if (!validFields.includes(sortField)) {",
+              "        pm.expect(pm.response.code).to.equal(400);",
+              "        const responseData = pm.response.json();",
+              "        pm.expect(responseData.imsx_description)",
+              "            .to.include('Invalid sort field');",
+              "    }",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{bearer-token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/classes/{{validClassSourcedId}}/results?sort=invalidField",
+          "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+          "path": ["classes", "{{validClassSourcedId}}", "results"],
+          "query": [
+            {
+              "key": "sort",
+              "value": "invalidField"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "{{baseUrl}}{{gradebookServiceApiPrefix}}",
+      "type": "string"
+    },
+    {
+      "key": "x-client-id",
+      "value": "{{x-client-id}}",
+      "type": "string"
+    },
+    {
+      "key": "x-app-key",
+      "value": "{{x-app-key}}",
+      "type": "string"
+    },
+    {
+      "key": "bearerToken",
+      "value": " {{bearer-token}}",
+      "type": "string"
+    },
+    {
+      "key": "validClassSourcedId",
+      "value": "b968e450-52e8-480f-ba01-d35c50145e53",
+      "type": "string"
+    },
+    {
+      "key": "invalidClassSourcedId",
+      "value": "b698e412-52e8-480f-ba01-d35c50145e53",
+      "type": "string"
+    },
+    {
+      "key": "classSourcedIdWithEmptyResults",
+      "value": "919f2d45-a648-492c-90a7-efed3967ae82",
+      "type": "string"
+    }
+  ]
+}

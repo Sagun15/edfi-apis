@@ -1,0 +1,151 @@
+{
+  "info": {
+    "_postman_id": "36afbd1e-4140-406a-9ebd-fb21e7d28373",
+    "name": "create-user-profiles",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31022060"
+  },
+  "item": [
+    {
+      "name": "createUserProfile(All fields)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearer-token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"profileId\": \"4ca1ab50-db84-40cf-bc9e-25c706062192\",\n \"profileType\": \"admin\",\n \"description\": \"Administrator profile with full access\",\n \"vendorId\": \"123-abc\",\n \"roleId\":\"5eefabe5-cc3f-4bdc-a3f9-08b43ce799ca\" ,\n \"applicationId\":\"9a9faec4-bef4-4791-86a8-f7a134541fd1\",\n \"credentials\": [\n    {\n \"type\": \"password\",\n \"username\": \"admin_user\",\n \"password\": \"SecureP@ssw0rd!\",\n \"extensions\":{\n \"abc\":\"def\",\n \"ghi\":\"pqr\"\n    }\n  },\n  {\n \"type\": \"password\",\n \"username\": \"admin_user2\",\n \"password\": \"SecureP@ssw0rd!\"\n  }\n  ]\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/885b2f5a-09a0-4c51-97bb-6fc5a623064f/userProfiles",
+          "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+          "path": [
+            "users",
+            "885b2f5a-09a0-4c51-97bb-6fc5a623064f",
+            "userProfiles"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "createUserProfile(Minimum fields)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearer-token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"profileId\": \"4ca1ab50-db84-40cf-bc9e-25c706062192\",\n \"profileType\": \"admin\",\n \"description\": \"Administrator profile with full access\",\n \"vendorId\": \"abc-123\",\n \"roleId\":\"5eefabe5-cc3f-4bdc-a3f9-08b43ce799ca\" \n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/885b2f5a-09a0-4c51-97bb-6fc5a623064f/userProfiles",
+          "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+          "path": [
+            "users",
+            "885b2f5a-09a0-4c51-97bb-6fc5a623064f",
+            "userProfiles"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "createUserProfile(Incorrect role_id)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearer-token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-client-id",
+            "value": "{{x-client-id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-app-key",
+            "value": "{{x-app-key}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"profileId\": \"4ca1ab50-db84-40cf-bc9e-25c706062194\",\n \"profileType\": \"admin\",\n \"description\": \"Administrator profile with full access\",\n \"vendorId\": \"123-abc\",\n \"roleId\":\"5eefabe5-cc3f-4bdc-a3f9-08b43ce790ca\" ,\n \"applicationId\":\"9a9faec4-bef4-4791-86a8-f7a134541fd1\",\n \"credentials\": [\n    {\n \"type\": \"password\",\n \"username\": \"admin_user\",\n \"password\": \"SecureP@ssw0rd!\",\n \"extensions\":{\n \"abc\":\"def\",\n \"ghi\":\"pqr\"\n    }\n  },\n  {\n \"type\": \"password\",\n \"username\": \"admin_user2\",\n \"password\": \"SecureP@ssw0rd!\"\n  }\n  ]\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}{{rosterWriteApiPrefix}}/users/885b2f5a-09a0-4c51-97bb-6fc5a623064f/userProfiles",
+          "host": ["{{baseUrl}}{{rosterWriteApiPrefix}}"],
+          "path": [
+            "users",
+            "885b2f5a-09a0-4c51-97bb-6fc5a623064f",
+            "userProfiles"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

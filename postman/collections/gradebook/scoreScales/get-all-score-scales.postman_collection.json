@@ -1,0 +1,1591 @@
+{
+	"info": {
+		"_postman_id": "64aa81a5-e5a6-4f3e-8bc7-e84ae8c6dc60",
+		"name": "get-all-scoreScales",
+		"description": "Test suite for scoreScales API covering various filter, sort, pagination, and error scenarios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36990357"
+	},
+	"item": [
+		{
+			"name": "Happy Path Tests",
+			"item": [
+				{
+					"name": "Get All ScoreScales (Default)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response structure is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    // Check top-level properties",
+									"    pm.expect(responseData).to.have.property('imsx_codeMajor', 'success');",
+									"    pm.expect(responseData).to.have.property('imsx_severity', 'status');",
+									"    pm.expect(responseData).to.have.property('scoreScales').that.is.an('array');",
+									"    ",
+									"    // Iterate through each scoreScale",
+									"    responseData.scoreScales.forEach(scoreScale => {",
+									"        // Required string fields",
+									"        pm.expect(scoreScale).to.have.property('sourcedId').that.is.a('string');",
+									"        pm.expect(scoreScale).to.have.property('title').that.is.a('string');",
+									"        pm.expect(scoreScale).to.have.property('type').that.is.a('string');",
+									"        ",
+									"        // Optional fields (can be null)",
+									"        const optionalFields = ['status', 'dateLastModified'];",
+									"        optionalFields.forEach(field => {",
+									"            if (scoreScale.hasOwnProperty(field) && scoreScale[field] !== null) {",
+									"                pm.expect(scoreScale[field]).to.be.a('string');",
+									"            }",
+									"        });",
+									"",
+									"        // Required reference objects (null checks added)",
+									"        const checkRequiredReference = (obj, fieldName, hrefPath) => {",
+									"            pm.expect(obj).to.have.property(fieldName);",
+									"            if (obj[fieldName] !== null) {",
+									"                pm.expect(obj[fieldName]).to.be.an('object');",
+									"                pm.expect(obj[fieldName]).to.have.property('href').that.is.a('string').and.includes(hrefPath);",
+									"                pm.expect(obj[fieldName]).to.have.property('sourcedId').that.is.a('string');",
+									"                pm.expect(obj[fieldName]).to.have.property('type').that.is.a('string');",
+									"            }",
+									"        };",
+									"",
+									"        checkRequiredReference(scoreScale, 'course', '/v1/courses/');",
+									"        checkRequiredReference(scoreScale, 'class', '/v1/classes/');",
+									"        ",
+									"        // Required scoreScaleValue",
+									"        pm.expect(scoreScale).to.have.property('scoreScaleValue').that.is.an('array');",
+									"        scoreScale.scoreScaleValue.forEach(value => {",
+									"            pm.expect(value).to.have.property('itemValueLHS');",
+									"            pm.expect(value).to.have.property('itemValueRHS');",
+									"            ",
+									"            if (value.itemValueLHS !== null) pm.expect(value.itemValueLHS).to.be.a('string');",
+									"            if (value.itemValueRHS !== null) pm.expect(value.itemValueRHS).to.be.a('string');",
+									"        });",
+									"    });",
+									"});",
+									"",
+									"// Performance Test",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/ScoreScales"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All ScoreScales (With Filters)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Filters are applied correctly\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    responseData.scoreScales.forEach(scoreScale => {",
+									"        // Example filter: course.sourcedId='UUID'",
+									"        pm.expect(scoreScale.course.sourcedId).to.equal('7df8ef42-f585-4391-bcdf-38e23acd167a');",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"X-Total-Count matches results length\", function () {",
+									"    const totalCount = parseInt(pm.response.headers.get('X-Total-Count'));",
+									"    const resultsCount = pm.response.json().scoreScales.length;",
+									"    pm.expect(totalCount).to.equal(resultsCount);",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/ScoreScales?filter=course.sourcedId='7df8ef42-f585-4391-bcdf-38e23acd167a'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"ScoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "course.sourcedId='7df8ef42-f585-4391-bcdf-38e23acd167a'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All ScoreScales (With Pagination)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Pagination works correctly\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.scoreScales.length).to.be.at.most(10);",
+									"    ",
+									"    const limit = parseInt(pm.request.url.query.find(param => param.key === 'limit').value);",
+									"    const offset = parseInt(pm.request.url.query.find(param => param.key === 'offset').value);",
+									"    ",
+									"    pm.expect(limit).to.be.a('number');",
+									"    pm.expect(offset).to.be.a('number');",
+									"});",
+									"",
+									"pm.test(\"X-Total-Count is present\", function () {",
+									"    pm.expect(pm.response.headers.has('X-Total-Count')).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/ScoreScales?limit=10&offset=0",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"ScoreScales"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All ScoreScales (With Sorting)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Results are sorted correctly\", function () {",
+									"    const responseData = pm.response.json();",
+									"    const scoreScales = responseData.scoreScales;",
+									"    ",
+									"    if(scoreScales.length > 1) {",
+									"        for(let i = 0; i < scoreScales.length - 1; i++) {",
+									"            const current = scoreScales[i].course.sourcedId;",
+									"            const next = scoreScales[i + 1].course.sourcedId;",
+									"            ",
+									"            // Corrected comparison using localeCompare",
+									"            pm.expect(current.localeCompare(next)).to.be.at.most(0);",
+									"        }",
+									"    }",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/ScoreScales?sort=course.sourcedId&orderBy=ASC",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"ScoreScales"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "course.sourcedId"
+								},
+								{
+									"key": "orderBy",
+									"value": "ASC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All ScoreScales (With Combined Parameters)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Combined parameters work correctly\", function () {",
+									"    const responseData = pm.response.json();",
+									"    const scoreScales = responseData.scoreScales;",
+									"    ",
+									"    // Check filters",
+									"    scoreScales.forEach(scoreScale => {",
+									"        pm.expect(scoreScale.course.sourcedId).to.equal('7df8ef42-f585-4391-bcdf-38e23acd167a');",
+									"    });",
+									"    ",
+									"    // Check sorting (Fix applied using localeCompare)",
+									"    if(scoreScales.length > 1) {",
+									"        for(let i = 0; i < scoreScales.length - 1; i++) {",
+									"            const current = scoreScales[i].course.sourcedId;",
+									"            const next = scoreScales[i + 1].course.sourcedId;",
+									"            ",
+									"            pm.expect(current.localeCompare(next)).to.be.at.most(0);",
+									"        }",
+									"    }",
+									"    ",
+									"    // Check pagination headers",
+									"    pm.expect(pm.response.headers.has('X-Total-Count')).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=course.sourcedId='7df8ef42-f585-4391-bcdf-38e23acd167a'&sort=course.sourcedId&orderBy=ASC&limit=10&offset=0",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "course.sourcedId='7df8ef42-f585-4391-bcdf-38e23acd167a'"
+								},
+								{
+									"key": "sort",
+									"value": "course.sourcedId"
+								},
+								{
+									"key": "orderBy",
+									"value": "ASC"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Tests",
+			"item": [
+				{
+					"name": "Invalid Filter Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"    pm.expect(responseData.imsx_description).to.include('Invalid filter format');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=invalid=filter=format",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "invalid=filter=format"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Required Headers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Error response structure is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"    pm.expect(responseData.imsx_description).to.include('Missing required headers');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Field Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates invalid field\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"    ",
+									"    pm.expect(responseData.imsx_description).to.match(/The provided filter field '.*' is invalid or not supported./);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=invalidField='value'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "invalidField='value'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Predicate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates invalid predicate\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"",
+									"    pm.expect(responseData.imsx_description).to.include(\"Invalid filter format\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=score>>'50'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "score>>'50'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Value Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates invalid value\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"",
+									"    pm.expect(responseData.imsx_description.toLowerCase()).to.include(\"invalid\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=score='invalid_number'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "score='invalid_number'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Logical Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates invalid logical operator\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"",
+									"    pm.expect(responseData.imsx_description.toLowerCase()).to.include(\"invalid filter format\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=score>'50' XOR status='ACTIVE'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "score>'50' XOR status='ACTIVE'"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Edge Case Tests",
+			"item": [
+				{
+					"name": "Empty Filter Value",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates empty value\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"",
+									"    pm.expect(responseData.imsx_description).to.match(/invalid|unsupported|empty/i);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=score=''",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "score=''"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Special Characters in Text Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Special characters are handled correctly\", function () {",
+									"    const responseData = pm.response.json();",
+									"    responseData.scoreScales.forEach(scoreScale => {",
+									"        // Assuming title can contain special characters",
+									"        pm.expect(scoreScale.title).to.match(/^[a-zA-Z0-9 .,!?'-]*$/);",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=title~'Exam'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "title~'Exam'"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pagination and Sorting Tests",
+			"item": [
+				{
+					"name": "Get All ScoreScales (With Limit and Offset)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Limit and Offset are applied correctly\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.scoreScales.length).to.be.at.most(10);",
+									"});",
+									"",
+									"pm.test(\"X-Total-Count is correct\", function () {",
+									"    const totalCount = parseInt(pm.response.headers.get('X-Total-Count'));",
+									"    const resultsCount = pm.response.json().scoreScales.length;",
+									"    pm.expect(totalCount).to.be.at.least(resultsCount);",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?limit=10&offset=0",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All ScoreScales (With Sort and Filter)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Sort and Filter are applied correctly\", function () {",
+									"    const responseData = pm.response.json();",
+									"    const scoreScales = responseData.scoreScales;",
+									"",
+									"    // ✅ Check filters",
+									"    scoreScales.forEach(scoreScale => {",
+									"        pm.expect(scoreScale.course.sourcedId).to.equal(\"7df8ef42-f585-4391-bcdf-38e23acd167a\");",
+									"    });",
+									"",
+									"    // ✅ Check sorting (Ensure ascending order for `title`)",
+									"    if (scoreScales.length > 1) {",
+									"        for (let i = 0; i < scoreScales.length - 1; i++) {",
+									"            const current = scoreScales[i].title.toLowerCase();",
+									"            const next = scoreScales[i + 1].title.toLowerCase();",
+									"",
+									"            // Fix: Ensure sorting is ASCENDING based on title",
+									"            pm.expect(current.localeCompare(next)).to.be.at.most(0); // current ≤ next",
+									"        }",
+									"    }",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=course.sourcedId='7df8ef42-f585-4391-bcdf-38e23acd167a'&sort=title&orderBy=ASC&limit=10&offset=0",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "course.sourcedId='7df8ef42-f585-4391-bcdf-38e23acd167a'"
+								},
+								{
+									"key": "sort",
+									"value": "title"
+								},
+								{
+									"key": "orderBy",
+									"value": "ASC"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invalid Test Cases",
+			"item": [
+				{
+					"name": "Invalid Filter Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"",
+									"    pm.expect(responseData.imsx_description).to.match(/invalid=filter/);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=invalid=filter=format",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "invalid=filter=format"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Required Headers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Error response structure is correct\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"    ",
+									"    pm.expect(responseData.imsx_description).to.equal('Missing required headers');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Field Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates invalid field\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"    pm.expect(responseData.imsx_description).to.include('is invalid or not supported');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=invalidField='value'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "invalidField='value'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Predicate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates invalid predicate\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"    ",
+									"    pm.expect(responseData.imsx_description.toLowerCase()).to.include('invalid filter format');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=score>>'50'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "score>>'50'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Value Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates invalid value\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"    ",
+									"    pm.expect(responseData.imsx_description.toLowerCase()).to.include('invalid or not supported');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=score='invalid_number'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "score='invalid_number'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Logical Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates invalid logical operator\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"    ",
+									"    pm.expect(responseData.imsx_description.toLowerCase()).to.include('invalid filter format');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=score>'50' XOR status='active'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "score>'50' XOR status='active'"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Edge Case Tests",
+			"item": [
+				{
+					"name": "Empty Filter Value",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates empty value\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.have.property('imsx_description');",
+									"    ",
+									"    pm.expect(responseData.imsx_description.toLowerCase()).to.include('invalid or not supported');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=score=''",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "score=''"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Special Characters in Text Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Special characters are handled correctly\", function () {",
+									"    const responseData = pm.response.json();",
+									"    responseData.scoreScales.forEach(scoreScale => {",
+									"        // Assuming title can contain special characters",
+									"        pm.expect(scoreScale.title).to.match(/^[a-zA-Z0-9 .,!?'-]*$/);",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/scoreScales?filter=title~'Exam'",
+							"host": [
+								"{{baseUrl}}{{gradebookServiceApiPrefix}}"
+							],
+							"path": [
+								"scoreScales"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "title~'Exam'"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "x-client-id",
+			"value": "{{x-client-id}}",
+			"type": "string"
+		},
+		{
+			"key": "gradebookServiceApiPrefix",
+			"value": "/ims/oneroster/gradebook/v1p2",
+			"type": "string"
+		},
+		{
+			"key": "x-app-key",
+			"value": "{{x-app-key}}",
+			"type": "string"
+		},
+		{
+			"key": "bearerToken",
+			"value": "{{bearer-token}}",
+			"type": "string"
+		}
+	]
+}

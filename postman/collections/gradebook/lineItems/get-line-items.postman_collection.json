@@ -1,0 +1,407 @@
+{
+  "info": {
+    "_postman_id": "b0d01686-cd82-4160-9cd8-e50f4339f52f",
+    "name": "get-line-items",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31022060"
+  },
+  "item": [
+    {
+      "name": "getLineItem",
+      "item": [
+        {
+          "name": "401 - UnAuthorized",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/lineItems/{{validSourcedId}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["lineItems", "{{validSourcedId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "400 Malformed fields parameter",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnROYW1lIjoiYWxwaGEiLCJjbGllbnRJZCI6Ijk3OGNmNzE4ZjVjMjY2ODQiLCJhZG1pblVzZXIiOiJBZG1pblVzZXIiLCJhZG1pbkVtYWlsIjoiYWxwaGFAYWxwaGEuY29tIiwiY29nbml0b1VzZXJJZCI6ImNvZ25pdG8tMTIzIiwic2NvcGVzIjpbInJlYWQiLCJ3cml0ZSJdLCJpYXQiOjE3MzM3MTM0NzUsImV4cCI6MTc2NTI0OTQ3NSwiaXNzIjoiYWxwaGEifQ.m_XkirIn8QeH9-C0og9CDQyUVD97IAzL6kNoi4GilD3XpwXMVoC6TnkEqxYTqgHsXrtUslY6hCjhLC9ij7xiPSISiWpu66pQ6E93wzM-4VPQHjb2ZdzDSStj3osI4_9dMdWmCjwdXOjLy49K_D8P6NjkxeXkK7erzdZZrg8-hesZT4H2zg_XjDSh6Xj2yWoDPVggLqXc1RtDh324MHaF643eAitd3n-QDul0X0PuXDWxRqm8OISHiM7uzSXX-sjOjiKxvtSjmKGmrGrq3AD8TqAnNbkE-v6mA-gWDPzKYQ9Eykst1Owqnc8Nuvb5rvepKta0gRPKXTrfOZNdLUMJlg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/lineItems/{{validSourcedId}}?fields=,,",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["lineItems", "{{validSourcedId}}"],
+              "query": [
+                {
+                  "key": "fields",
+                  "value": ",,"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 fields with unknown field",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnROYW1lIjoiYWxwaGEiLCJjbGllbnRJZCI6Ijk3OGNmNzE4ZjVjMjY2ODQiLCJhZG1pblVzZXIiOiJBZG1pblVzZXIiLCJhZG1pbkVtYWlsIjoiYWxwaGFAYWxwaGEuY29tIiwiY29nbml0b1VzZXJJZCI6ImNvZ25pdG8tMTIzIiwic2NvcGVzIjpbInJlYWQiLCJ3cml0ZSJdLCJpYXQiOjE3MzM3MTM0NzUsImV4cCI6MTc2NTI0OTQ3NSwiaXNzIjoiYWxwaGEifQ.m_XkirIn8QeH9-C0og9CDQyUVD97IAzL6kNoi4GilD3XpwXMVoC6TnkEqxYTqgHsXrtUslY6hCjhLC9ij7xiPSISiWpu66pQ6E93wzM-4VPQHjb2ZdzDSStj3osI4_9dMdWmCjwdXOjLy49K_D8P6NjkxeXkK7erzdZZrg8-hesZT4H2zg_XjDSh6Xj2yWoDPVggLqXc1RtDh324MHaF643eAitd3n-QDul0X0PuXDWxRqm8OISHiM7uzSXX-sjOjiKxvtSjmKGmrGrq3AD8TqAnNbkE-v6mA-gWDPzKYQ9Eykst1Owqnc8Nuvb5rvepKta0gRPKXTrfOZNdLUMJlg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/lineItems/{{validSourcedId}}?fields=unknownField",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["lineItems", "{{validSourcedId}}"],
+              "query": [
+                {
+                  "key": "fields",
+                  "value": "unknownField"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 fields with known fields",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnROYW1lIjoiYWxwaGEiLCJjbGllbnRJZCI6Ijk3OGNmNzE4ZjVjMjY2ODQiLCJhZG1pblVzZXIiOiJBZG1pblVzZXIiLCJhZG1pbkVtYWlsIjoiYWxwaGFAYWxwaGEuY29tIiwiY29nbml0b1VzZXJJZCI6ImNvZ25pdG8tMTIzIiwic2NvcGVzIjpbInJlYWQiLCJ3cml0ZSJdLCJpYXQiOjE3MzM3MTM0NzUsImV4cCI6MTc2NTI0OTQ3NSwiaXNzIjoiYWxwaGEifQ.m_XkirIn8QeH9-C0og9CDQyUVD97IAzL6kNoi4GilD3XpwXMVoC6TnkEqxYTqgHsXrtUslY6hCjhLC9ij7xiPSISiWpu66pQ6E93wzM-4VPQHjb2ZdzDSStj3osI4_9dMdWmCjwdXOjLy49K_D8P6NjkxeXkK7erzdZZrg8-hesZT4H2zg_XjDSh6Xj2yWoDPVggLqXc1RtDh324MHaF643eAitd3n-QDul0X0PuXDWxRqm8OISHiM7uzSXX-sjOjiKxvtSjmKGmrGrq3AD8TqAnNbkE-v6mA-gWDPzKYQ9Eykst1Owqnc8Nuvb5rvepKta0gRPKXTrfOZNdLUMJlg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/lineItems?fields=class,school, sourcedId, scoreScale, gradingPeriod, academicSession",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["lineItems"],
+              "query": [
+                {
+                  "key": "fields",
+                  "value": "class,school, sourcedId, scoreScale, gradingPeriod, academicSession"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 - ValidSourcedId",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnROYW1lIjoiYWxwaGEiLCJjbGllbnRJZCI6Ijk3OGNmNzE4ZjVjMjY2ODQiLCJhZG1pblVzZXIiOiJBZG1pblVzZXIiLCJhZG1pbkVtYWlsIjoiYWxwaGFAYWxwaGEuY29tIiwiY29nbml0b1VzZXJJZCI6ImNvZ25pdG8tMTIzIiwic2NvcGVzIjpbInJlYWQiLCJ3cml0ZSJdLCJpYXQiOjE3MzM3MTM0NzUsImV4cCI6MTc2NTI0OTQ3NSwiaXNzIjoiYWxwaGEifQ.m_XkirIn8QeH9-C0og9CDQyUVD97IAzL6kNoi4GilD3XpwXMVoC6TnkEqxYTqgHsXrtUslY6hCjhLC9ij7xiPSISiWpu66pQ6E93wzM-4VPQHjb2ZdzDSStj3osI4_9dMdWmCjwdXOjLy49K_D8P6NjkxeXkK7erzdZZrg8-hesZT4H2zg_XjDSh6Xj2yWoDPVggLqXc1RtDh324MHaF643eAitd3n-QDul0X0PuXDWxRqm8OISHiM7uzSXX-sjOjiKxvtSjmKGmrGrq3AD8TqAnNbkE-v6mA-gWDPzKYQ9Eykst1Owqnc8Nuvb5rvepKta0gRPKXTrfOZNdLUMJlg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/lineItems?fields=class,school, sourcedId, scoreScale, gradingPeriod, academicSession",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["lineItems"],
+              "query": [
+                {
+                  "key": "fields",
+                  "value": "class,school, sourcedId, scoreScale, gradingPeriod, academicSession"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "500 Internal Server Error - NEEDS MANUAL CHANGE IN DB LAYER",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnROYW1lIjoiYWxwaGEiLCJjbGllbnRJZCI6Ijk3OGNmNzE4ZjVjMjY2ODQiLCJhZG1pblVzZXIiOiJBZG1pblVzZXIiLCJhZG1pbkVtYWlsIjoiYWxwaGFAYWxwaGEuY29tIiwiY29nbml0b1VzZXJJZCI6ImNvZ25pdG8tMTIzIiwic2NvcGVzIjpbInJlYWQiLCJ3cml0ZSJdLCJpYXQiOjE3MzM3MTM0NzUsImV4cCI6MTc2NTI0OTQ3NSwiaXNzIjoiYWxwaGEifQ.m_XkirIn8QeH9-C0og9CDQyUVD97IAzL6kNoi4GilD3XpwXMVoC6TnkEqxYTqgHsXrtUslY6hCjhLC9ij7xiPSISiWpu66pQ6E93wzM-4VPQHjb2ZdzDSStj3osI4_9dMdWmCjwdXOjLy49K_D8P6NjkxeXkK7erzdZZrg8-hesZT4H2zg_XjDSh6Xj2yWoDPVggLqXc1RtDh324MHaF643eAitd3n-QDul0X0PuXDWxRqm8OISHiM7uzSXX-sjOjiKxvtSjmKGmrGrq3AD8TqAnNbkE-v6mA-gWDPzKYQ9Eykst1Owqnc8Nuvb5rvepKta0gRPKXTrfOZNdLUMJlg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lineItems/{{validSourcedId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["lineItems", "{{validSourcedId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "404 Invalid sourcedId",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnROYW1lIjoiYWxwaGEiLCJjbGllbnRJZCI6Ijk3OGNmNzE4ZjVjMjY2ODQiLCJhZG1pblVzZXIiOiJBZG1pblVzZXIiLCJhZG1pbkVtYWlsIjoiYWxwaGFAYWxwaGEuY29tIiwiY29nbml0b1VzZXJJZCI6ImNvZ25pdG8tMTIzIiwic2NvcGVzIjpbInJlYWQiLCJ3cml0ZSJdLCJpYXQiOjE3MzM3MTM0NzUsImV4cCI6MTc2NTI0OTQ3NSwiaXNzIjoiYWxwaGEifQ.m_XkirIn8QeH9-C0og9CDQyUVD97IAzL6kNoi4GilD3XpwXMVoC6TnkEqxYTqgHsXrtUslY6hCjhLC9ij7xiPSISiWpu66pQ6E93wzM-4VPQHjb2ZdzDSStj3osI4_9dMdWmCjwdXOjLy49K_D8P6NjkxeXkK7erzdZZrg8-hesZT4H2zg_XjDSh6Xj2yWoDPVggLqXc1RtDh324MHaF643eAitd3n-QDul0X0PuXDWxRqm8OISHiM7uzSXX-sjOjiKxvtSjmKGmrGrq3AD8TqAnNbkE-v6mA-gWDPzKYQ9Eykst1Owqnc8Nuvb5rvepKta0gRPKXTrfOZNdLUMJlg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/lineItems/{{validSourcedId}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["lineItems", "{{validSourcedId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "400 Invalid sourcedId Datatype",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnROYW1lIjoiYWxwaGEiLCJjbGllbnRJZCI6Ijk3OGNmNzE4ZjVjMjY2ODQiLCJhZG1pblVzZXIiOiJBZG1pblVzZXIiLCJhZG1pbkVtYWlsIjoiYWxwaGFAYWxwaGEuY29tIiwiY29nbml0b1VzZXJJZCI6ImNvZ25pdG8tMTIzIiwic2NvcGVzIjpbInJlYWQiLCJ3cml0ZSJdLCJpYXQiOjE3MzM3MTM0NzUsImV4cCI6MTc2NTI0OTQ3NSwiaXNzIjoiYWxwaGEifQ.m_XkirIn8QeH9-C0og9CDQyUVD97IAzL6kNoi4GilD3XpwXMVoC6TnkEqxYTqgHsXrtUslY6hCjhLC9ij7xiPSISiWpu66pQ6E93wzM-4VPQHjb2ZdzDSStj3osI4_9dMdWmCjwdXOjLy49K_D8P6NjkxeXkK7erzdZZrg8-hesZT4H2zg_XjDSh6Xj2yWoDPVggLqXc1RtDh324MHaF643eAitd3n-QDul0X0PuXDWxRqm8OISHiM7uzSXX-sjOjiKxvtSjmKGmrGrq3AD8TqAnNbkE-v6mA-gWDPzKYQ9Eykst1Owqnc8Nuvb5rvepKta0gRPKXTrfOZNdLUMJlg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}",
+                "type": "text"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/lineItems/{{wrongDataType}}",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["lineItems", "{{wrongDataType}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

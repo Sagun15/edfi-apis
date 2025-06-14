@@ -1,0 +1,1262 @@
+{
+  "info": {
+    "_postman_id": "52723869-e695-4ca5-8091-7e1cac80ce5e",
+    "name": "get-all-results",
+    "description": "Test suite for GradebookResults API covering various filter, sort, pagination, and error scenarios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31022060"
+  },
+  "item": [
+    {
+      "name": "Happy Path Tests",
+      "item": [
+        {
+          "name": "Get All Results (Default)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response structure is correct\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    // Check top-level properties",
+                  "    pm.expect(responseData).to.have.property('results').that.is.an('array');",
+                  "    ",
+                  "    if(responseData.results.length > 0) {",
+                  "        const result = responseData.results[0];",
+                  "        ",
+                  "        // Required fields",
+                  "        pm.expect(result).to.have.property('sourcedId').that.is.a('string');",
+                  "        pm.expect(result).to.have.property('status').that.is.a('string');",
+                  "        pm.expect(result).to.have.property('dateLastModified').that.is.a('string');",
+                  "        pm.expect(result).to.have.property('score').that.is.a('string');",
+                  "        pm.expect(result).to.have.property('scoreDate').that.is.a('string');",
+                  "        ",
+                  "        // Boolean fields",
+                  "        pm.expect(result).to.have.property('inProgress').that.is.a('boolean');",
+                  "        pm.expect(result).to.have.property('incomplete').that.is.a('boolean');",
+                  "        pm.expect(result).to.have.property('late').that.is.a('boolean');",
+                  "        pm.expect(result).to.have.property('missing').that.is.a('boolean');",
+                  "        ",
+                  "        // Enum fields",
+                  "        pm.expect(result.status).to.be.oneOf(['active', 'inactive', 'tobedeleted']);",
+                  "        pm.expect(result.scoreStatus).to.be.oneOf(['SUBMITTED', 'FULLY_GRADED', 'PARTIALLY_GRADED', 'NOT_GRADED']);",
+                  "        ",
+                  "        // Nested objects",
+                  "        const checkNestedObject = (obj, fieldName, hrefPath) => {",
+                  "            pm.expect(obj).to.have.property(fieldName).that.is.an('object');",
+                  "            pm.expect(obj[fieldName]).to.have.property('href').that.is.a('string');",
+                  "            pm.expect(obj[fieldName]).to.have.property('sourcedId').that.is.a('string');",
+                  "            pm.expect(obj[fieldName]).to.have.property('type').that.is.a('string');",
+                  "            pm.expect(obj[fieldName].href).to.include(hrefPath);",
+                  "        };",
+                  "        ",
+                  "        checkNestedObject(result, 'lineItem', '/v1/lineItems/');",
+                  "        checkNestedObject(result, 'scoreScale', '/v1/scoreScales/');",
+                  "        checkNestedObject(result, 'student', '/v1/users/');",
+                  "        checkNestedObject(result, 'class', '/v1/classes/');",
+                  "        ",
+                  "        // Metadata fields",
+                  "        pm.expect(result).to.have.property('metadata').that.is.an('object');",
+                  "        pm.expect(result.metadata).to.have.property('result').that.is.an('object');",
+                  "        pm.expect(result.metadata.result).to.have.property('testType').that.is.a('string');",
+                  "        pm.expect(result.metadata.result).to.have.property('maxScore').that.is.a('string');",
+                  "        ",
+                  "        pm.expect(result.metadata).to.have.property('attempt').that.is.an('object');",
+                  "        pm.expect(result.metadata.attempt).to.have.property('sourcedId').that.is.a('string');",
+                  "        pm.expect(result.metadata.attempt).to.have.property('startedAtTime').that.is.a('string');",
+                  "        pm.expect(result.metadata.attempt).to.have.property('endedAtTime').that.is.a('string');",
+                  "        ",
+                  "        pm.expect(result.metadata).to.have.property('lineItem').that.is.an('object');",
+                  "        pm.expect(result.metadata.lineItem).to.have.property('title').that.is.a('string');",
+                  "        ",
+                  "        // Date format validation",
+                  "        const date = new Date(result.scoreDate);",
+                  "        pm.expect(date.toISOString()).to.equal(result.scoreDate);",
+                  "    }",
+                  "});",
+                  "",
+                  "// Additional tests",
+                  "pm.test(\"Pagination headers are present\", function () {",
+                  "    pm.expect(pm.response.headers.has('X-Total-Count')).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Results (With Filters)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Filters are applied correctly\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    responseData.results.forEach(result => {",
+                  "        // Example filter: score>'50'",
+                  "        pm.expect(parseFloat(result.score)).to.be.above(50);",
+                  "        ",
+                  "        // Example filter: status='active'",
+                  "        pm.expect(result.status).to.equal('active');",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=score>'50' AND status='active'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "score>'50' AND status='active'"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Results (With Pagination)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Pagination works correctly\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData.results.length).to.be.at.most(10);",
+                  "    ",
+                  "    const limit = parseInt(pm.request.url.query.find(param => param.key === 'limit').value);",
+                  "    const offset = parseInt(pm.request.url.query.find(param => param.key === 'offset').value);",
+                  "    ",
+                  "    pm.expect(limit).to.be.a('number');",
+                  "    pm.expect(offset).to.be.a('number');",
+                  "});",
+                  "",
+                  "pm.test(\"X-Total-Count is present\", function () {",
+                  "    pm.expect(pm.response.headers.has('X-Total-Count')).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?limit=10&offset=0",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Results (With Sorting)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Results are sorted correctly\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    const results = responseData.results;",
+                  "    ",
+                  "    if(results.length > 1) {",
+                  "        for(let i = 0; i < results.length - 1; i++) {",
+                  "            const current = new Date(results[i].dateLastModified);",
+                  "            const next = new Date(results[i + 1].dateLastModified);",
+                  "            pm.expect(current).to.be.at.least(next);",
+                  "        }",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?sort=dateLastModified&orderBy=ASC",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "dateLastModified"
+                },
+                {
+                  "key": "orderBy",
+                  "value": "ASC"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Results (With Combined Parameters)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Combined parameters work correctly\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    const results = responseData.results;",
+                  "    ",
+                  "    // Check filters",
+                  "    results.forEach(result => {",
+                  "        pm.expect(parseFloat(result.score)).to.be.above(75);",
+                  "        pm.expect(result.status).to.equal('active');",
+                  "    });",
+                  "    ",
+                  "    // Check sorting",
+                  "    if(results.length > 1) {",
+                  "        for(let i = 0; i < results.length - 1; i++) {",
+                  "            const current = new Date(results[i].scoreDate);",
+                  "            const next = new Date(results[i + 1].scoreDate);",
+                  "            pm.expect(current).to.be.at.least(next);",
+                  "        }",
+                  "    }",
+                  "    ",
+                  "    // Check pagination headers",
+                  "    pm.expect(pm.response.headers.has('X-Total-Count')).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=score>'75' AND status='active'&sort=scoreDate&orderBy=ASC&limit=10&offset=0",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "score>'75' AND status='active'"
+                },
+                {
+                  "key": "sort",
+                  "value": "scoreDate"
+                },
+                {
+                  "key": "orderBy",
+                  "value": "ASC"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative Tests",
+      "item": [
+        {
+          "name": "Invalid Filter Format",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message is correct\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+                  "    pm.expect(responseData).to.have.property('imsx_description').to.include('Invalid filter format');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=score>>'50'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "score>>'50'"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Missing Required Headers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Error response structure is correct\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_codeMajor').equal('failure');",
+                  "    pm.expect(responseData).to.have.property('imsx_severity').equal('error');",
+                  "    pm.expect(responseData).to.have.property('imsx_description').equal('Missing required headers');",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property('imsx_CodeMinor').that.is.an('object');",
+                  "    pm.expect(responseData.imsx_CodeMinor).to.have.property('imsx_codeMinorField').that.is.an('array');",
+                  "    ",
+                  "    const errorField = responseData.imsx_CodeMinor.imsx_codeMinorField[0];",
+                  "    pm.expect(errorField).to.have.property('imsx_codeMinorFieldName').equal('TargetEndSystem');",
+                  "    pm.expect(errorField).to.have.property('imsx_codeMinorFieldValue').equal('unauthorisedrequest');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Field Name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates invalid field\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData).to.have.property('imsx_description').to.include('invalidField');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=invalidField='value'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "invalidField='value'"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Predicate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates invalid predicate\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData).to.have.property('imsx_description').to.include('Invalid filter format');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=score>>'50'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "score>>'50'"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Value Type",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates invalid value\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData).to.have.property('imsx_description').to.include('invalid_number');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=score='invalid_number'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "score='invalid_number'"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Logical Operator",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates invalid filter format\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData).to.have.property('imsx_description').to.include('Invalid filter format');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=score>'50' XOR status='active'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "score>'50' XOR status='active'"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pagination and Sorting Tests",
+      "item": [
+        {
+          "name": "Get All Results (With Limit and Offset)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Limit and Offset are applied correctly\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData.results.length).to.be.at.most(10);",
+                  "});",
+                  "",
+                  "pm.test(\"X-Total-Count is correct\", function () {",
+                  "    const totalCount = parseInt(pm.response.headers.get('X-Total-Count'));",
+                  "    const resultsCount = pm.response.json().results.length;",
+                  "    pm.expect(totalCount).to.be.at.least(resultsCount);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?limit=10&offset=0",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Results (With Sort and Filter)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Sort and Filter are applied correctly\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    const results = responseData.results;",
+                  "    ",
+                  "    if (results) {",
+                  "        results.forEach(result => {",
+                  "            pm.expect(parseFloat(result.score)).to.be.above(75);",
+                  "            pm.expect(result.status).to.equal('active');",
+                  "        });",
+                  "        ",
+                  "        if(results.length > 1) {",
+                  "            for(let i = 0; i < results.length - 1; i++) {",
+                  "                const current = new Date(results[i].scoreDate);",
+                  "                const next = new Date(results[i + 1].scoreDate);",
+                  "                pm.expect(current).to.be.at.least(next);",
+                  "            }",
+                  "        }",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=score>'75' AND status='active'&sort=scoreDate&orderBy=DESC&limit=10&offset=0",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "score>'75' AND status='active'"
+                },
+                {
+                  "key": "sort",
+                  "value": "scoreDate"
+                },
+                {
+                  "key": "orderBy",
+                  "value": "DESC"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Invalid Test Cases",
+      "item": [
+        {
+          "name": "Invalid Field Name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates invalid field\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData).to.have.property('imsx_description').to.include('invalidField');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=invalidField='value'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "invalidField='value'"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Predicate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates invalid predicate\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData).to.have.property('imsx_description').to.include('Invalid filter format');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=score>>'50'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "score>>'50'"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Value Type",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates invalid value\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData).to.have.property('imsx_description').to.include('invalid_number');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=score='invalid_number'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "score='invalid_number'"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Logical Operator",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates invalid filter format\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData).to.have.property('imsx_description').to.include('Invalid filter format');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=score>'50' XOR status='active'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "score>'50' XOR status='active'"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Edge Case Tests",
+      "item": [
+        {
+          "name": "Empty Filter Value",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates empty value\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData).to.have.property('imsx_severity').to.include(\"error\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=status=''",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "status=''"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Special Characters in Text Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Special characters are handled correctly\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    if (responseData.results) {",
+                  "        responseData.results.forEach(result => {",
+                  "            // Assuming description can contain special characters",
+                  "            pm.expect(result.metadata.lineItem.description).to.match(/^[a-zA-Z0-9 .,!?'-]*$/);",
+                  "        });",
+                  "    } else {",
+                  "        pm.expect(responseData.results).to.not.be.undefined;",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer-token}}"
+              },
+              {
+                "key": "x-app-key",
+                "value": "{{x-app-key}}"
+              },
+              {
+                "key": "x-client-id",
+                "value": "{{x-client-id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{gradebookServiceApiPrefix}}/gradebookResults?filter=metadata.lineItem.description~'quiz'",
+              "host": ["{{baseUrl}}{{gradebookServiceApiPrefix}}"],
+              "path": ["gradebookResults"],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "metadata.lineItem.description~'quiz'"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearer-token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "{{baseUrl}}",
+      "type": "string"
+    },
+    {
+      "key": "x-client-id",
+      "value": "{{x-client-id}}",
+      "type": "string"
+    },
+    {
+      "key": "x-app-key",
+      "value": "{{x-app-key}}",
+      "type": "string"
+    },
+    {
+      "key": "bearerToken",
+      "value": "{{bearer-token}}",
+      "type": "string"
+    }
+  ]
+}

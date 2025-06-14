@@ -1,0 +1,277 @@
+{
+	"info": {
+		"_postman_id": "353ba976-851c-4ea7-9d7b-54a9ae998631",
+		"name": "Terms Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25448387",
+		"_collection_link": "https://alpha6-9004.postman.co/workspace/6ec28d3c-cd15-4ccf-a4ff-352427d1a097/collection/25448387-353ba976-851c-4ea7-9d7b-54a9ae998631?action=share&source=collection_link&creator=25448387"
+	},
+	"item": [
+		{
+			"name": "get-all-terms",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{bearer-token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{rosteringServiceApiPrefix}}/terms",
+					"host": [
+						"{{baseUrl}}{{rosteringServiceApiPrefix}}"
+					],
+					"path": [
+						"terms"
+					],
+					"query": [
+						{
+							"key": "sort",
+							"value": "name",
+							"disabled": true
+						},
+						{
+							"key": "orderBy",
+							"value": "DESC",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "filter",
+							"value": "status=\"active\"",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+			},
+			"response": []
+		},
+		{
+			"name": "get-term",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{bearer-token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{rosteringServiceApiPrefix}}/terms/{{termSourcedId}}",
+					"host": [
+						"{{baseUrl}}{{rosteringServiceApiPrefix}}"
+					],
+					"path": [
+						"terms",
+						"{{termSourcedId}}"
+					],
+					"query": [
+						{
+							"key": "sort",
+							"value": "givenName",
+							"disabled": true
+						},
+						{
+							"key": "orderBy",
+							"value": "DESC",
+							"disabled": true
+						},
+						{
+							"key": "filter",
+							"value": "userProfiles.profileType%3D%27STUDENT%27",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+			},
+			"response": []
+		},
+		{
+			"name": "get-classes-for-terms",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{bearer-token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{rosteringServiceApiPrefix}}/terms/{{termSourcedId}}/classes",
+					"host": [
+						"{{baseUrl}}{{rosteringServiceApiPrefix}}"
+					],
+					"path": [
+						"terms",
+						"{{termSourcedId}}",
+						"classes"
+					],
+					"query": [
+						{
+							"key": "sort",
+							"value": "title",
+							"disabled": true
+						},
+						{
+							"key": "orderBy",
+							"value": "DESC",
+							"disabled": true
+						},
+						{
+							"key": "filter",
+							"value": "userProfiles.profileType%3D%27STUDENT%27",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+			},
+			"response": []
+		},
+		{
+			"name": "get-grading-periods-for-term",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-client-id",
+						"value": "{{x-client-id}}"
+					},
+					{
+						"key": "x-app-key",
+						"value": "{{x-app-key}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{bearer-token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{rosteringServiceApiPrefix}}/terms/{{termSourcedId}}/gradingPeriods",
+					"host": [
+						"{{baseUrl}}{{rosteringServiceApiPrefix}}"
+					],
+					"path": [
+						"terms",
+						"{{termSourcedId}}",
+						"gradingPeriods"
+					],
+					"query": [
+						{
+							"key": "sort",
+							"value": "title",
+							"disabled": true
+						},
+						{
+							"key": "orderBy",
+							"value": "DESC",
+							"disabled": true
+						},
+						{
+							"key": "filter",
+							"value": "userProfiles.profileType%3D%27STUDENT%27",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "termSourcedId",
+			"value": "<term-sourced-id>",
+			"type": "string"
+		}
+	]
+}

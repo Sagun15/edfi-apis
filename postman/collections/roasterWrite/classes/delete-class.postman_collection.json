@@ -1,0 +1,433 @@
+{
+	"info": {
+		"_postman_id": "e6c374ea-42d8-4776-ae4e-e9abfccdfc6a",
+		"name": "delete-class",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36990357"
+	},
+	"item": [
+		{
+			"name": "Happy Path Tests",
+			"item": [
+				{
+					"name": "delete the class with valid existing class",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes/{{classSourceId}}",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes",
+								"{{classSourceId}}"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Tests",
+			"item": [
+				{
+					"name": "Class does not exist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404 Not Found\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes/{{invalidClassSourcedId}}",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes",
+								"{{invalidClassSourcedId}}"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Unauthorized Error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes/{{classSourceId}}",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes",
+								"{{classSourceId}}"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid UUID format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status test\", function () {",
+									"    pm.response.to.have.status(400);",
+									"    const res = pm.response.json();",
+									"    res.imsx_description = \"sourcedId must be a valid UUID.\";",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-client-id",
+								"value": "{{x-client-id}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-key",
+								"value": "{{x-app-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearer-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{rosteringWriteServiceApiPrefix}}/classes/{{classSourceId}}",
+							"host": [
+								"{{baseUrl}}{{rosteringWriteServiceApiPrefix}}"
+							],
+							"path": [
+								"classes",
+								"{{classSourceId}}"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "title",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "DESC",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "sourcedId,grades,title,subjects,subjectCodes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3001/v1/users?sort=givenName&orderBy=DESC&filter=userProfiles.profileType%3D%27STUDENT%27&limit=10&offset=0' \\\n--header 'x-client-id: {{x-client-id}}' \\\n--header 'x-app-key: {{x-app-key}}' \\\n--header 'Authorization: {{bearer-token}}'"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "x-client-id",
+			"value": "{{x-client-id}}",
+			"type": "string"
+		},
+		{
+			"key": "rosteringWriteServiceApiPrefix",
+			"value": "/custom/rostering/v1p0",
+			"type": "string"
+		},
+		{
+			"key": "x-app-key",
+			"value": "{{x-app-key}}",
+			"type": "string"
+		},
+		{
+			"key": "bearerToken",
+			"value": "{{bearer-token}}",
+			"type": "string"
+		},
+		{
+			"key": "classSourceId",
+			"value": "<class-sourced-id>",
+			"type": "string"
+		},
+		{
+			"key": "invalidClassSourcedId",
+			"value": "<invalid-class-sourced-id>",
+			"type": "string"
+		}
+	]
+}
